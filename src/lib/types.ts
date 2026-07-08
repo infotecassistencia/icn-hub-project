@@ -1,6 +1,4 @@
 // Core domain types for ICN Hub.
-// Backend (Lovable Cloud / Supabase) not yet wired — these mirror the future schema
-// so mock data and components can be swapped for real data with minimal churn.
 
 export type Modalidade = "presencial" | "online";
 export type TipoPagamento = "pago" | "gratuito";
@@ -28,16 +26,31 @@ export type TipoEvento =
 
 export type TipoUsuario = "nutricionista" | "tecnico" | "estudante";
 
+export type AppRole = "admin" | "organizador" | "participante";
+
+export type StatusMensagem = "novo" | "respondido" | "arquivado";
+
+export interface ContactMessage {
+  id: string;
+  nome: string;
+  email: string;
+  telefone: string | null;
+  assunto: string;
+  mensagem: string;
+  data_envio: string;
+  status: StatusMensagem;
+}
+
 export interface Evento {
   id: string;
   nome: string;
   resumo: string;
   descricao?: string;
   local: string;
-  estado: string; // sigla UF
-  data: string; // ISO
+  estado: string;
+  data: string;
   duracao: string;
-  valor: number; // 0 = gratuito
+  valor: number;
   ministrante: string;
   bannerUrl: string;
   modalidade: Modalidade;
@@ -67,29 +80,19 @@ export interface Mentoria {
   criadoPor?: string;
 }
 
-export interface PerfilBase {
+export interface Perfil {
   id: string;
   nome: string;
   email: string;
   telefone: string;
   cpf: string;
-  tipo: TipoUsuario;
+  tipo: "nutricionista" | "tecnico" | "estudante" | "participante";
+  crn?: string | null;
+  areaAtuacao?: string | null;
+  instituicao?: string | null;
+  semestre?: string | null;
   criadoEm: string;
 }
-
-export interface PerfilProfissional extends PerfilBase {
-  tipo: "nutricionista" | "tecnico";
-  crn: string;
-  areaAtuacao: string;
-}
-
-export interface PerfilEstudante extends PerfilBase {
-  tipo: "estudante";
-  instituicao: string;
-  semestre: string;
-}
-
-export type Perfil = PerfilProfissional | PerfilEstudante;
 
 export interface FiltrosBusca {
   modalidade?: Modalidade | "todos";

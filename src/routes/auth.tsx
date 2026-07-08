@@ -179,6 +179,3 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
     </div>
   );
 }
-
-// keep `redirect` referenced for future guarded flows without unused-import lint
-void redirect;

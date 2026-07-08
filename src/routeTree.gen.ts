@@ -9,38 +9,232 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SobreRouteImport } from './routes/sobre'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MentoriasIndexRouteImport } from './routes/mentorias.index'
+import { Route as EventosIndexRouteImport } from './routes/eventos.index'
+import { Route as MentoriasNovaRouteImport } from './routes/mentorias.nova'
+import { Route as MentoriasIdRouteImport } from './routes/mentorias.$id'
+import { Route as EventosNovoRouteImport } from './routes/eventos.novo'
+import { Route as EventosIdRouteImport } from './routes/eventos.$id'
+import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
+import { Route as AuthenticatedMeusEventosRouteImport } from './routes/_authenticated/meus-eventos'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 
+const SobreRoute = SobreRouteImport.update({
+  id: '/sobre',
+  path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MentoriasIndexRoute = MentoriasIndexRouteImport.update({
+  id: '/mentorias/',
+  path: '/mentorias/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventosIndexRoute = EventosIndexRouteImport.update({
+  id: '/eventos/',
+  path: '/eventos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentoriasNovaRoute = MentoriasNovaRouteImport.update({
+  id: '/mentorias/nova',
+  path: '/mentorias/nova',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentoriasIdRoute = MentoriasIdRouteImport.update({
+  id: '/mentorias/$id',
+  path: '/mentorias/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventosNovoRoute = EventosNovoRouteImport.update({
+  id: '/eventos/novo',
+  path: '/eventos/novo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventosIdRoute = EventosIdRouteImport.update({
+  id: '/eventos/$id',
+  path: '/eventos/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedPerfilRoute = AuthenticatedPerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedMeusEventosRoute =
+  AuthenticatedMeusEventosRouteImport.update({
+    id: '/meus-eventos',
+    path: '/meus-eventos',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sobre': typeof SobreRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/meus-eventos': typeof AuthenticatedMeusEventosRoute
+  '/perfil': typeof AuthenticatedPerfilRoute
+  '/eventos/$id': typeof EventosIdRoute
+  '/eventos/novo': typeof EventosNovoRoute
+  '/mentorias/$id': typeof MentoriasIdRoute
+  '/mentorias/nova': typeof MentoriasNovaRoute
+  '/eventos/': typeof EventosIndexRoute
+  '/mentorias/': typeof MentoriasIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sobre': typeof SobreRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/meus-eventos': typeof AuthenticatedMeusEventosRoute
+  '/perfil': typeof AuthenticatedPerfilRoute
+  '/eventos/$id': typeof EventosIdRoute
+  '/eventos/novo': typeof EventosNovoRoute
+  '/mentorias/$id': typeof MentoriasIdRoute
+  '/mentorias/nova': typeof MentoriasNovaRoute
+  '/eventos': typeof EventosIndexRoute
+  '/mentorias': typeof MentoriasIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sobre': typeof SobreRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/meus-eventos': typeof AuthenticatedMeusEventosRoute
+  '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
+  '/eventos/$id': typeof EventosIdRoute
+  '/eventos/novo': typeof EventosNovoRoute
+  '/mentorias/$id': typeof MentoriasIdRoute
+  '/mentorias/nova': typeof MentoriasNovaRoute
+  '/eventos/': typeof EventosIndexRoute
+  '/mentorias/': typeof MentoriasIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/sitemap.xml'
+    | '/sobre'
+    | '/dashboard'
+    | '/meus-eventos'
+    | '/perfil'
+    | '/eventos/$id'
+    | '/eventos/novo'
+    | '/mentorias/$id'
+    | '/mentorias/nova'
+    | '/eventos/'
+    | '/mentorias/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/sitemap.xml'
+    | '/sobre'
+    | '/dashboard'
+    | '/meus-eventos'
+    | '/perfil'
+    | '/eventos/$id'
+    | '/eventos/novo'
+    | '/mentorias/$id'
+    | '/mentorias/nova'
+    | '/eventos'
+    | '/mentorias'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/sitemap.xml'
+    | '/sobre'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/meus-eventos'
+    | '/_authenticated/perfil'
+    | '/eventos/$id'
+    | '/eventos/novo'
+    | '/mentorias/$id'
+    | '/mentorias/nova'
+    | '/eventos/'
+    | '/mentorias/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SobreRoute: typeof SobreRoute
+  EventosIdRoute: typeof EventosIdRoute
+  EventosNovoRoute: typeof EventosNovoRoute
+  MentoriasIdRoute: typeof MentoriasIdRoute
+  MentoriasNovaRoute: typeof MentoriasNovaRoute
+  EventosIndexRoute: typeof EventosIndexRoute
+  MentoriasIndexRoute: typeof MentoriasIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sobre': {
+      id: '/sobre'
+      path: '/sobre'
+      fullPath: '/sobre'
+      preLoaderRoute: typeof SobreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +242,101 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mentorias/': {
+      id: '/mentorias/'
+      path: '/mentorias'
+      fullPath: '/mentorias/'
+      preLoaderRoute: typeof MentoriasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/eventos/': {
+      id: '/eventos/'
+      path: '/eventos'
+      fullPath: '/eventos/'
+      preLoaderRoute: typeof EventosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentorias/nova': {
+      id: '/mentorias/nova'
+      path: '/mentorias/nova'
+      fullPath: '/mentorias/nova'
+      preLoaderRoute: typeof MentoriasNovaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentorias/$id': {
+      id: '/mentorias/$id'
+      path: '/mentorias/$id'
+      fullPath: '/mentorias/$id'
+      preLoaderRoute: typeof MentoriasIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/eventos/novo': {
+      id: '/eventos/novo'
+      path: '/eventos/novo'
+      fullPath: '/eventos/novo'
+      preLoaderRoute: typeof EventosNovoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/eventos/$id': {
+      id: '/eventos/$id'
+      path: '/eventos/$id'
+      fullPath: '/eventos/$id'
+      preLoaderRoute: typeof EventosIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/perfil': {
+      id: '/_authenticated/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof AuthenticatedPerfilRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/meus-eventos': {
+      id: '/_authenticated/meus-eventos'
+      path: '/meus-eventos'
+      fullPath: '/meus-eventos'
+      preLoaderRoute: typeof AuthenticatedMeusEventosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
+interface AuthenticatedRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedMeusEventosRoute: typeof AuthenticatedMeusEventosRoute
+  AuthenticatedPerfilRoute: typeof AuthenticatedPerfilRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedMeusEventosRoute: AuthenticatedMeusEventosRoute,
+  AuthenticatedPerfilRoute: AuthenticatedPerfilRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  AuthRoute: AuthRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SobreRoute: SobreRoute,
+  EventosIdRoute: EventosIdRoute,
+  EventosNovoRoute: EventosNovoRoute,
+  MentoriasIdRoute: MentoriasIdRoute,
+  MentoriasNovaRoute: MentoriasNovaRoute,
+  EventosIndexRoute: EventosIndexRoute,
+  MentoriasIndexRoute: MentoriasIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

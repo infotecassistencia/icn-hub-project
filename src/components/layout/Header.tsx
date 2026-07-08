@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Menu, Sprout, X } from "lucide-react";
+import { Menu, Shield, Sprout, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth-context";
@@ -17,17 +17,21 @@ const NAV = [
   { to: "/eventos", label: "Eventos" },
   { to: "/mentorias", label: "Mentorias" },
   { to: "/sobre", label: "Sobre" },
+  { to: "/contato", label: "Contato" },
 ] as const;
 
 export function Header() {
   const [open, setOpen] = useState(false);
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     await logout();
     navigate({ to: "/" });
   };
+
+  const displayName = user?.nome || "Minha conta";
+  const initial = (user?.nome || user?.email || "?").charAt(0).toUpperCase();
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur">
@@ -64,10 +68,10 @@ export function Header() {
                 <Button variant="ghost" className="gap-2">
                   <Avatar className="h-8 w-8">
                     <AvatarFallback className="bg-primary text-primary-foreground">
-                      {user.nome.charAt(0).toUpperCase()}
+                      {initial}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="max-w-[120px] truncate text-sm">{user.nome}</span>
+                  <span className="max-w-[120px] truncate text-sm">{displayName}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
@@ -82,6 +86,16 @@ export function Header() {
                 <DropdownMenuItem asChild>
                   <Link to="/perfil">Perfil</Link>
                 </DropdownMenuItem>
+                {isAdmin && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin" className="flex items-center gap-2">
+                        <Shield className="h-4 w-4" /> Painel administrativo
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>Sair</DropdownMenuItem>
               </DropdownMenuContent>
@@ -130,6 +144,13 @@ export function Header() {
                       Dashboard
                     </Link>
                   </Button>
+                  {isAdmin && (
+                    <Button asChild variant="outline">
+                      <Link to="/admin" onClick={() => setOpen(false)}>
+                        Painel admin
+                      </Link>
+                    </Button>
+                  )}
                   <Button variant="ghost" onClick={handleLogout}>
                     Sair
                   </Button>

@@ -23,6 +23,7 @@ export function Footer() {
             <li><Link to="/eventos">Eventos</Link></li>
             <li><Link to="/mentorias">Mentorias</Link></li>
             <li><Link to="/sobre">Sobre</Link></li>
+            <li><Link to="/contato">Contato</Link></li>
           </ul>
         </div>
         <div>

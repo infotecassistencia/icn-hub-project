@@ -26,13 +26,13 @@ function Perfil() {
           <Row label="Perfil" value={<Badge variant="secondary">{user.tipo}</Badge>} />
           {user.tipo === "estudante" ? (
             <>
-              <Row label="Instituição" value={user.instituicao} />
-              <Row label="Semestre" value={user.semestre} />
+              <Row label="Instituição" value={user.instituicao ?? "—"} />
+              <Row label="Semestre" value={user.semestre ?? "—"} />
             </>
           ) : (
             <>
-              <Row label="CRN" value={user.crn} />
-              <Row label="Área de atuação" value={user.areaAtuacao} />
+              <Row label="CRN" value={user.crn ?? "—"} />
+              <Row label="Área de atuação" value={user.areaAtuacao ?? "—"} />
             </>
           )}
         </CardContent>

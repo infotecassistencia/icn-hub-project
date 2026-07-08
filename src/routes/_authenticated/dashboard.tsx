@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CalendarCheck2, Heart, Megaphone, TrendingUp } from "lucide-react";
+import { CalendarCheck2, Heart, Megaphone, Shield, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/auth-context";
 import { MOCK_EVENTOS, MOCK_MENTORIAS } from "@/lib/mock-data";
 import { EventCard } from "@/components/events/EventCard";
@@ -12,23 +13,44 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 });
 
 function Dashboard() {
-  const { user } = useAuth();
+  const { user, isAdmin, isOrganizador, roles } = useAuth();
   const recomendados = MOCK_EVENTOS.slice(0, 3);
+  const firstName = (user?.nome || user?.email || "").split(" ")[0] || "";
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="font-display text-3xl font-semibold md:text-4xl">
-            Olá, {user?.nome.split(" ")[0]} 👋
+            Olá, {firstName} 👋
           </h1>
           <p className="mt-1 text-muted-foreground">
             Aqui está um resumo do seu ICN Hub.
           </p>
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {roles.length === 0 ? (
+              <Badge variant="outline">Sem papel</Badge>
+            ) : (
+              roles.map((r) => (
+                <Badge key={r} variant={r === "admin" ? "default" : "secondary"} className="capitalize">
+                  {r}
+                </Badge>
+              ))
+            )}
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Button asChild variant="outline"><Link to="/eventos/novo">Divulgar evento</Link></Button>
-          <Button asChild><Link to="/mentorias/nova">Anunciar mentoria</Link></Button>
+        <div className="flex flex-wrap gap-2">
+          {isAdmin && (
+            <Button asChild variant="outline">
+              <Link to="/admin"><Shield className="mr-2 h-4 w-4" />Painel admin</Link>
+            </Button>
+          )}
+          {(isOrganizador || isAdmin) && (
+            <>
+              <Button asChild variant="outline"><Link to="/eventos/novo">Divulgar evento</Link></Button>
+              <Button asChild><Link to="/mentorias/nova">Anunciar mentoria</Link></Button>
+            </>
+          )}
         </div>
       </div>
 

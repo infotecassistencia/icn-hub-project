@@ -199,7 +199,7 @@ function MentorProfile() {
           {mentor.areasAtuacao.length > 0 && (
             <Section title="Áreas de atuação">
               <div className="flex flex-wrap gap-2">
-                {mentor.areasAtuacao.map((a) => (
+                {mentor.areasAtuacao.map((a: string) => (
                   <Badge key={a} variant="outline">
                     {areaLabel(a)}
                   </Badge>
@@ -247,7 +247,7 @@ function MentorProfile() {
                 Eventos ministrados
               </h2>
               <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {eventos.map((e) => (
+                {eventos.map((e: typeof eventos[number]) => (
                   <EventCard key={e.id} item={e} basePath="/eventos" />
                 ))}
               </div>
@@ -260,7 +260,7 @@ function MentorProfile() {
                 Mentorias disponíveis
               </h2>
               <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {mentorias.map((m) => (
+                {mentorias.map((m: typeof mentorias[number]) => (
                   <EventCard key={m.id} item={m} basePath="/mentorias" />
                 ))}
               </div>

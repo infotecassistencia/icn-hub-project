@@ -19,6 +19,7 @@ import { Route as MentoriasIndexRouteImport } from './routes/mentorias.index'
 import { Route as EventosIndexRouteImport } from './routes/eventos.index'
 import { Route as MentoriasNovaRouteImport } from './routes/mentorias.nova'
 import { Route as MentoriasIdRouteImport } from './routes/mentorias.$id'
+import { Route as MentoresSlugRouteImport } from './routes/mentores.$slug'
 import { Route as EventosNovoRouteImport } from './routes/eventos.novo'
 import { Route as EventosIdRouteImport } from './routes/eventos.$id'
 import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
@@ -79,6 +80,11 @@ const MentoriasNovaRoute = MentoriasNovaRouteImport.update({
 const MentoriasIdRoute = MentoriasIdRouteImport.update({
   id: '/mentorias/$id',
   path: '/mentorias/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentoresSlugRoute = MentoresSlugRouteImport.update({
+  id: '/mentores/$slug',
+  path: '/mentores/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EventosNovoRoute = EventosNovoRouteImport.update({
@@ -160,6 +166,7 @@ export interface FileRoutesByFullPath {
   '/perfil': typeof AuthenticatedPerfilRoute
   '/eventos/$id': typeof EventosIdRoute
   '/eventos/novo': typeof EventosNovoRoute
+  '/mentores/$slug': typeof MentoresSlugRoute
   '/mentorias/$id': typeof MentoriasIdRoute
   '/mentorias/nova': typeof MentoriasNovaRoute
   '/eventos/': typeof EventosIndexRoute
@@ -182,6 +189,7 @@ export interface FileRoutesByTo {
   '/perfil': typeof AuthenticatedPerfilRoute
   '/eventos/$id': typeof EventosIdRoute
   '/eventos/novo': typeof EventosNovoRoute
+  '/mentores/$slug': typeof MentoresSlugRoute
   '/mentorias/$id': typeof MentoriasIdRoute
   '/mentorias/nova': typeof MentoriasNovaRoute
   '/eventos': typeof EventosIndexRoute
@@ -207,6 +215,7 @@ export interface FileRoutesById {
   '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
   '/eventos/$id': typeof EventosIdRoute
   '/eventos/novo': typeof EventosNovoRoute
+  '/mentores/$slug': typeof MentoresSlugRoute
   '/mentorias/$id': typeof MentoriasIdRoute
   '/mentorias/nova': typeof MentoriasNovaRoute
   '/eventos/': typeof EventosIndexRoute
@@ -232,6 +241,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/eventos/$id'
     | '/eventos/novo'
+    | '/mentores/$slug'
     | '/mentorias/$id'
     | '/mentorias/nova'
     | '/eventos/'
@@ -254,6 +264,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/eventos/$id'
     | '/eventos/novo'
+    | '/mentores/$slug'
     | '/mentorias/$id'
     | '/mentorias/nova'
     | '/eventos'
@@ -278,6 +289,7 @@ export interface FileRouteTypes {
     | '/_authenticated/perfil'
     | '/eventos/$id'
     | '/eventos/novo'
+    | '/mentores/$slug'
     | '/mentorias/$id'
     | '/mentorias/nova'
     | '/eventos/'
@@ -299,6 +311,7 @@ export interface RootRouteChildren {
   SobreRoute: typeof SobreRoute
   EventosIdRoute: typeof EventosIdRoute
   EventosNovoRoute: typeof EventosNovoRoute
+  MentoresSlugRoute: typeof MentoresSlugRoute
   MentoriasIdRoute: typeof MentoriasIdRoute
   MentoriasNovaRoute: typeof MentoriasNovaRoute
   EventosIndexRoute: typeof EventosIndexRoute
@@ -375,6 +388,13 @@ declare module '@tanstack/react-router' {
       path: '/mentorias/$id'
       fullPath: '/mentorias/$id'
       preLoaderRoute: typeof MentoriasIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentores/$slug': {
+      id: '/mentores/$slug'
+      path: '/mentores/$slug'
+      fullPath: '/mentores/$slug'
+      preLoaderRoute: typeof MentoresSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/eventos/novo': {
@@ -512,6 +532,7 @@ const rootRouteChildren: RootRouteChildren = {
   SobreRoute: SobreRoute,
   EventosIdRoute: EventosIdRoute,
   EventosNovoRoute: EventosNovoRoute,
+  MentoresSlugRoute: MentoresSlugRoute,
   MentoriasIdRoute: MentoriasIdRoute,
   MentoriasNovaRoute: MentoriasNovaRoute,
   EventosIndexRoute: EventosIndexRoute,

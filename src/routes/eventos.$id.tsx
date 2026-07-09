@@ -73,7 +73,23 @@ function EventoDetalhe() {
           <Info icon={<CalendarDays />} label="Data" value={data.toLocaleString("pt-BR")} />
           <Info icon={<Clock />} label="Duração" value={evento.duracao} />
           <Info icon={<MapPin />} label="Local" value={`${evento.local} · ${evento.estado}`} />
-          <Info icon={<User2 />} label="Ministrado por" value={evento.ministrante} />
+          <Info
+            icon={<User2 />}
+            label="Ministrado por"
+            value={
+              evento.mentorSlug ? (
+                <Link
+                  to="/mentores/$slug"
+                  params={{ slug: evento.mentorSlug }}
+                  className="text-primary hover:underline"
+                >
+                  {evento.ministrante}
+                </Link>
+              ) : (
+                evento.ministrante
+              )
+            }
+          />
         </div>
 
         {evento.descricao && (
@@ -97,7 +113,7 @@ function EventoDetalhe() {
   );
 }
 
-function Info({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+function Info({ icon, label, value }: { icon: React.ReactNode; label: string; value: React.ReactNode }) {
   return (
     <div className="flex items-start gap-3">
       <div className="flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-primary/10 text-primary">{icon}</div>

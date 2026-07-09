@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { CalendarDays, MapPin, Clock, Tag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
+import { CardContent } from "@/components/ui/card";
 import { areaLabel } from "@/lib/constants";
 import type { Evento, Mentoria } from "@/lib/types";
 
@@ -16,17 +16,16 @@ export function EventCard({ item, basePath }: Props) {
   const gratuito = item.valor === 0;
   const data = new Date(item.data);
   const to = basePath === "/eventos" ? "/eventos/$id" : "/mentorias/$id";
+  const ministranteNome = item.ministrante.split("+")[0].trim();
 
   return (
-    <Link
-      to={to}
-      params={{ id: item.id }}
-      className="group block overflow-hidden rounded-2xl border border-border bg-card shadow-card transition-all hover:-translate-y-1 hover:shadow-soft"
-    >
-      <div
-        className="aspect-[16/9] w-full bg-secondary bg-cover bg-center"
-        style={{ backgroundImage: `url(${item.bannerUrl})` }}
-      />
+    <article className="group block overflow-hidden rounded-2xl border border-border bg-card shadow-card transition-all hover:-translate-y-1 hover:shadow-soft">
+      <Link to={to} params={{ id: item.id }} className="block">
+        <div
+          className="aspect-[16/9] w-full bg-secondary bg-cover bg-center"
+          style={{ backgroundImage: `url(${item.bannerUrl})` }}
+        />
+      </Link>
       <CardContent className="p-5">
         <div className="mb-3 flex flex-wrap gap-2">
           <Badge variant="secondary" className="capitalize">
@@ -38,10 +37,12 @@ export function EventCard({ item, basePath }: Props) {
           <Badge variant="outline">{areaLabel(item.area)}</Badge>
         </div>
 
-        <h3 className="font-display text-lg font-semibold leading-snug group-hover:text-primary">
-          {item.nome}
-        </h3>
-        <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{item.resumo}</p>
+        <Link to={to} params={{ id: item.id }} className="block">
+          <h3 className="font-display text-lg font-semibold leading-snug group-hover:text-primary">
+            {item.nome}
+          </h3>
+          <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{item.resumo}</p>
+        </Link>
 
         <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
@@ -58,10 +59,20 @@ export function EventCard({ item, basePath }: Props) {
           </span>
           <span className="flex items-center gap-1.5">
             <Tag className="h-3.5 w-3.5" />
-            {item.ministrante.split("+")[0].trim()}
+            {item.mentorSlug ? (
+              <Link
+                to="/mentores/$slug"
+                params={{ slug: item.mentorSlug }}
+                className="truncate hover:text-primary hover:underline"
+              >
+                {ministranteNome}
+              </Link>
+            ) : (
+              <span className="truncate">{ministranteNome}</span>
+            )}
           </span>
         </div>
       </CardContent>
-    </Link>
+    </article>
   );
 }

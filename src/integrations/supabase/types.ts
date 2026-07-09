@@ -47,6 +47,69 @@ export type Database = {
         }
         Relationships: []
       }
+      mentores: {
+        Row: {
+          areas_atuacao: string[]
+          bio: string | null
+          cidade: string | null
+          created_at: string
+          crn: string | null
+          curriculo: string | null
+          especialidade: string | null
+          estado: string | null
+          formacao: string | null
+          foto_url: string | null
+          id: string
+          instagram: string | null
+          linkedin: string | null
+          nome: string
+          site: string | null
+          slug: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          areas_atuacao?: string[]
+          bio?: string | null
+          cidade?: string | null
+          created_at?: string
+          crn?: string | null
+          curriculo?: string | null
+          especialidade?: string | null
+          estado?: string | null
+          formacao?: string | null
+          foto_url?: string | null
+          id?: string
+          instagram?: string | null
+          linkedin?: string | null
+          nome: string
+          site?: string | null
+          slug: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          areas_atuacao?: string[]
+          bio?: string | null
+          cidade?: string | null
+          created_at?: string
+          crn?: string | null
+          curriculo?: string | null
+          especialidade?: string | null
+          estado?: string | null
+          formacao?: string | null
+          foto_url?: string | null
+          id?: string
+          instagram?: string | null
+          linkedin?: string | null
+          nome?: string
+          site?: string | null
+          slug?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           area_atuacao: string | null

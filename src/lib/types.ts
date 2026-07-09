@@ -41,6 +41,24 @@ export interface ContactMessage {
   status: StatusMensagem;
 }
 
+export interface Mentor {
+  id: string;
+  slug: string;
+  nome: string;
+  fotoUrl?: string | null;
+  crn?: string | null;
+  especialidade?: string | null;
+  bio?: string | null;
+  curriculo?: string | null;
+  formacao?: string | null;
+  areasAtuacao: string[];
+  cidade?: string | null;
+  estado?: string | null;
+  instagram?: string | null;
+  linkedin?: string | null;
+  site?: string | null;
+}
+
 export interface Evento {
   id: string;
   nome: string;
@@ -52,6 +70,7 @@ export interface Evento {
   duracao: string;
   valor: number;
   ministrante: string;
+  mentorSlug?: string;
   bannerUrl: string;
   modalidade: Modalidade;
   tipo: TipoEvento;
@@ -72,6 +91,7 @@ export interface Mentoria {
   duracao: string;
   valor: number;
   ministrante: string;
+  mentorSlug?: string;
   bannerUrl: string;
   modalidade: Modalidade;
   area: AreaNutricao;

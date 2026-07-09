@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardContent } from "@/components/ui/card";
 
-export const Route = createFileRoute("/_authenticated/_admin/configuracoes")({
+export const Route = createFileRoute("/_authenticated/admin/configuracoes")({
   head: () => ({ meta: [{ title: "Configurações — Admin" }, { name: "robots", content: "noindex" }] }),
   component: ConfigAdmin,
 });

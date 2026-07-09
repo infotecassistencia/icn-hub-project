@@ -18,7 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import type { AppRole } from "@/lib/types";
 
-export const Route = createFileRoute("/_authenticated/_admin/usuarios")({
+export const Route = createFileRoute("/_authenticated/admin/usuarios")({
   head: () => ({ meta: [{ title: "Usuários — Admin" }, { name: "robots", content: "noindex" }] }),
   component: UsuariosAdmin,
 });

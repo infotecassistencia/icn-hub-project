@@ -15,7 +15,7 @@ import { useAuth } from "@/lib/auth-context";
 // Admin gate: any route under /admin/* is protected client-side by isAdmin.
 // Backend RLS also blocks non-admins from reading/mutating admin data, so
 // even direct API access is denied.
-export const Route = createFileRoute("/_authenticated/_admin")({
+export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminLayout,
 });
 

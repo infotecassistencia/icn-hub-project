@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MOCK_EVENTOS } from "@/lib/mock-data";
 
-export const Route = createFileRoute("/_authenticated/_admin/eventos")({
+export const Route = createFileRoute("/_authenticated/admin/eventos")({
   head: () => ({ meta: [{ title: "Eventos — Admin" }, { name: "robots", content: "noindex" }] }),
   component: EventosAdmin,
 });

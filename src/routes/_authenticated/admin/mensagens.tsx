@@ -35,7 +35,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import type { ContactMessage, StatusMensagem } from "@/lib/types";
 
-export const Route = createFileRoute("/_authenticated/_admin/mensagens")({
+export const Route = createFileRoute("/_authenticated/admin/mensagens")({
   head: () => ({ meta: [{ title: "Mensagens — Admin" }, { name: "robots", content: "noindex" }] }),
   component: MensagensAdmin,
 });

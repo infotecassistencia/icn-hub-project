@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MOCK_MENTORIAS } from "@/lib/mock-data";
 
-export const Route = createFileRoute("/_authenticated/_admin/mentorias")({
+export const Route = createFileRoute("/_authenticated/admin/mentorias")({
   head: () => ({ meta: [{ title: "Mentorias — Admin" }, { name: "robots", content: "noindex" }] }),
   component: MentoriasAdmin,
 });

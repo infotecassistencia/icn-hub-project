@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
@@ -23,6 +24,13 @@ import { Route as EventosIdRouteImport } from './routes/eventos.$id'
 import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
 import { Route as AuthenticatedMeusEventosRouteImport } from './routes/_authenticated/meus-eventos'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authenticated/admin/usuarios'
+import { Route as AuthenticatedAdminMentoriasRouteImport } from './routes/_authenticated/admin/mentorias'
+import { Route as AuthenticatedAdminMensagensRouteImport } from './routes/_authenticated/admin/mensagens'
+import { Route as AuthenticatedAdminEventosRouteImport } from './routes/_authenticated/admin/eventos'
+import { Route as AuthenticatedAdminConfiguracoesRouteImport } from './routes/_authenticated/admin/configuracoes'
 
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
@@ -32,6 +40,11 @@ const SobreRoute = SobreRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContatoRoute = ContatoRouteImport.update({
+  id: '/contato',
+  path: '/contato',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -94,12 +107,54 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminUsuariosRoute =
+  AuthenticatedAdminUsuariosRouteImport.update({
+    id: '/usuarios',
+    path: '/usuarios',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminMentoriasRoute =
+  AuthenticatedAdminMentoriasRouteImport.update({
+    id: '/mentorias',
+    path: '/mentorias',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminMensagensRoute =
+  AuthenticatedAdminMensagensRouteImport.update({
+    id: '/mensagens',
+    path: '/mensagens',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminEventosRoute =
+  AuthenticatedAdminEventosRouteImport.update({
+    id: '/eventos',
+    path: '/eventos',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminConfiguracoesRoute =
+  AuthenticatedAdminConfiguracoesRouteImport.update({
+    id: '/configuracoes',
+    path: '/configuracoes',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/contato': typeof ContatoRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/meus-eventos': typeof AuthenticatedMeusEventosRoute
   '/perfil': typeof AuthenticatedPerfilRoute
@@ -109,10 +164,17 @@ export interface FileRoutesByFullPath {
   '/mentorias/nova': typeof MentoriasNovaRoute
   '/eventos/': typeof EventosIndexRoute
   '/mentorias/': typeof MentoriasIndexRoute
+  '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
+  '/admin/eventos': typeof AuthenticatedAdminEventosRoute
+  '/admin/mensagens': typeof AuthenticatedAdminMensagensRoute
+  '/admin/mentorias': typeof AuthenticatedAdminMentoriasRoute
+  '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/contato': typeof ContatoRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -124,14 +186,22 @@ export interface FileRoutesByTo {
   '/mentorias/nova': typeof MentoriasNovaRoute
   '/eventos': typeof EventosIndexRoute
   '/mentorias': typeof MentoriasIndexRoute
+  '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
+  '/admin/eventos': typeof AuthenticatedAdminEventosRoute
+  '/admin/mensagens': typeof AuthenticatedAdminMensagensRoute
+  '/admin/mentorias': typeof AuthenticatedAdminMentoriasRoute
+  '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
+  '/contato': typeof ContatoRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/meus-eventos': typeof AuthenticatedMeusEventosRoute
   '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
@@ -141,14 +211,22 @@ export interface FileRoutesById {
   '/mentorias/nova': typeof MentoriasNovaRoute
   '/eventos/': typeof EventosIndexRoute
   '/mentorias/': typeof MentoriasIndexRoute
+  '/_authenticated/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
+  '/_authenticated/admin/eventos': typeof AuthenticatedAdminEventosRoute
+  '/_authenticated/admin/mensagens': typeof AuthenticatedAdminMensagensRoute
+  '/_authenticated/admin/mentorias': typeof AuthenticatedAdminMentoriasRoute
+  '/_authenticated/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/auth'
+    | '/contato'
     | '/sitemap.xml'
     | '/sobre'
+    | '/admin'
     | '/dashboard'
     | '/meus-eventos'
     | '/perfil'
@@ -158,10 +236,17 @@ export interface FileRouteTypes {
     | '/mentorias/nova'
     | '/eventos/'
     | '/mentorias/'
+    | '/admin/configuracoes'
+    | '/admin/eventos'
+    | '/admin/mensagens'
+    | '/admin/mentorias'
+    | '/admin/usuarios'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
+    | '/contato'
     | '/sitemap.xml'
     | '/sobre'
     | '/dashboard'
@@ -173,13 +258,21 @@ export interface FileRouteTypes {
     | '/mentorias/nova'
     | '/eventos'
     | '/mentorias'
+    | '/admin/configuracoes'
+    | '/admin/eventos'
+    | '/admin/mensagens'
+    | '/admin/mentorias'
+    | '/admin/usuarios'
+    | '/admin'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/contato'
     | '/sitemap.xml'
     | '/sobre'
+    | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/_authenticated/meus-eventos'
     | '/_authenticated/perfil'
@@ -189,12 +282,19 @@ export interface FileRouteTypes {
     | '/mentorias/nova'
     | '/eventos/'
     | '/mentorias/'
+    | '/_authenticated/admin/configuracoes'
+    | '/_authenticated/admin/eventos'
+    | '/_authenticated/admin/mensagens'
+    | '/_authenticated/admin/mentorias'
+    | '/_authenticated/admin/usuarios'
+    | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ContatoRoute: typeof ContatoRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
   EventosIdRoute: typeof EventosIdRoute
@@ -219,6 +319,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contato': {
+      id: '/contato'
+      path: '/contato'
+      fullPath: '/contato'
+      preLoaderRoute: typeof ContatoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -305,16 +412,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/usuarios': {
+      id: '/_authenticated/admin/usuarios'
+      path: '/usuarios'
+      fullPath: '/admin/usuarios'
+      preLoaderRoute: typeof AuthenticatedAdminUsuariosRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/mentorias': {
+      id: '/_authenticated/admin/mentorias'
+      path: '/mentorias'
+      fullPath: '/admin/mentorias'
+      preLoaderRoute: typeof AuthenticatedAdminMentoriasRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/mensagens': {
+      id: '/_authenticated/admin/mensagens'
+      path: '/mensagens'
+      fullPath: '/admin/mensagens'
+      preLoaderRoute: typeof AuthenticatedAdminMensagensRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/eventos': {
+      id: '/_authenticated/admin/eventos'
+      path: '/eventos'
+      fullPath: '/admin/eventos'
+      preLoaderRoute: typeof AuthenticatedAdminEventosRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/configuracoes': {
+      id: '/_authenticated/admin/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/admin/configuracoes'
+      preLoaderRoute: typeof AuthenticatedAdminConfiguracoesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
 
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminConfiguracoesRoute: typeof AuthenticatedAdminConfiguracoesRoute
+  AuthenticatedAdminEventosRoute: typeof AuthenticatedAdminEventosRoute
+  AuthenticatedAdminMensagensRoute: typeof AuthenticatedAdminMensagensRoute
+  AuthenticatedAdminMentoriasRoute: typeof AuthenticatedAdminMentoriasRoute
+  AuthenticatedAdminUsuariosRoute: typeof AuthenticatedAdminUsuariosRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminConfiguracoesRoute: AuthenticatedAdminConfiguracoesRoute,
+  AuthenticatedAdminEventosRoute: AuthenticatedAdminEventosRoute,
+  AuthenticatedAdminMensagensRoute: AuthenticatedAdminMensagensRoute,
+  AuthenticatedAdminMentoriasRoute: AuthenticatedAdminMentoriasRoute,
+  AuthenticatedAdminUsuariosRoute: AuthenticatedAdminUsuariosRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
 interface AuthenticatedRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedMeusEventosRoute: typeof AuthenticatedMeusEventosRoute
   AuthenticatedPerfilRoute: typeof AuthenticatedPerfilRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedMeusEventosRoute: AuthenticatedMeusEventosRoute,
   AuthenticatedPerfilRoute: AuthenticatedPerfilRoute,
@@ -328,6 +507,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthRoute: AuthRoute,
+  ContatoRoute: ContatoRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
   EventosIdRoute: EventosIdRoute,

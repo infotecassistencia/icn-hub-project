@@ -72,7 +72,23 @@ function MentoriaDetalhe() {
           <Info icon={<CalendarDays />} label="Início" value={data.toLocaleString("pt-BR")} />
           <Info icon={<Clock />} label="Duração" value={mentoria.duracao} />
           <Info icon={<MapPin />} label="Local" value={`${mentoria.local} · ${mentoria.estado}`} />
-          <Info icon={<User2 />} label="Ministrado por" value={mentoria.ministrante} />
+          <Info
+            icon={<User2 />}
+            label="Ministrado por"
+            value={
+              mentoria.mentorSlug ? (
+                <Link
+                  to="/mentores/$slug"
+                  params={{ slug: mentoria.mentorSlug }}
+                  className="text-primary hover:underline"
+                >
+                  {mentoria.ministrante}
+                </Link>
+              ) : (
+                mentoria.ministrante
+              )
+            }
+          />
         </div>
 
         <div className="mt-10 rounded-2xl bg-gradient-primary p-8 text-primary-foreground">
@@ -89,7 +105,7 @@ function MentoriaDetalhe() {
   );
 }
 
-function Info({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+function Info({ icon, label, value }: { icon: React.ReactNode; label: string; value: React.ReactNode }) {
   return (
     <div className="flex items-start gap-3">
       <div className="flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-primary/10 text-primary">{icon}</div>

@@ -103,6 +103,7 @@ export function Header() {
                 <DropdownMenuItem onClick={handleLogout}>Sair</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+            </>
           ) : (
             <>
               <Button asChild variant="ghost">

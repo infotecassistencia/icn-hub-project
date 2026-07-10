@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const NAV = [

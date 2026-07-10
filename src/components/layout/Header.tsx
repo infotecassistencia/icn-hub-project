@@ -64,6 +64,8 @@ export function Header() {
 
         <div className="hidden items-center gap-2 md:flex">
           {isAuthenticated && user ? (
+            <>
+              <NotificationBell />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="gap-2">

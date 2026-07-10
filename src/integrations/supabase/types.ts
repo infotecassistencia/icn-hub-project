@@ -110,6 +110,48 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          canais_enviados: string[]
+          created_at: string
+          id: string
+          lida: boolean
+          mensagem: string
+          metadata: Json
+          tipo: string
+          titulo: string
+          updated_at: string
+          url_destino: string | null
+          user_id: string
+        }
+        Insert: {
+          canais_enviados?: string[]
+          created_at?: string
+          id?: string
+          lida?: boolean
+          mensagem: string
+          metadata?: Json
+          tipo: string
+          titulo: string
+          updated_at?: string
+          url_destino?: string | null
+          user_id: string
+        }
+        Update: {
+          canais_enviados?: string[]
+          created_at?: string
+          id?: string
+          lida?: boolean
+          mensagem?: string
+          metadata?: Json
+          tipo?: string
+          titulo?: string
+          updated_at?: string
+          url_destino?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           area_atuacao: string | null
@@ -181,6 +223,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_notification: {
+        Args: {
+          _mensagem: string
+          _metadata?: Json
+          _tipo: string
+          _titulo: string
+          _url_destino?: string
+          _user_id: string
+        }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

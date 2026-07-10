@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const NAV = [
@@ -63,6 +64,8 @@ export function Header() {
 
         <div className="hidden items-center gap-2 md:flex">
           {isAuthenticated && user ? (
+            <>
+              <NotificationBell />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="gap-2">
@@ -100,6 +103,7 @@ export function Header() {
                 <DropdownMenuItem onClick={handleLogout}>Sair</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+            </>
           ) : (
             <>
               <Button asChild variant="ghost">

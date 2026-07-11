@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { CalendarPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteLayout } from "@/components/layout/SiteLayout";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { EventCard } from "@/components/events/EventCard";
 import { EventFilters, aplicarFiltros } from "@/components/events/EventFilters";
 import { MOCK_EVENTOS } from "@/lib/mock-data";
@@ -25,30 +27,35 @@ function EventosIndex() {
 
   return (
     <SiteLayout>
-      <section className="border-b border-border/60 bg-gradient-hero">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <h1 className="font-display text-4xl font-semibold md:text-5xl">Eventos</h1>
-              <p className="mt-2 max-w-2xl text-muted-foreground">
-                Cursos, congressos, workshops e jornadas científicas em nutrição.
-              </p>
-            </div>
-            <Button asChild><Link to="/eventos/novo">Divulgar evento</Link></Button>
-          </div>
-        </div>
-      </section>
+      <PageHeader
+        eyebrow="Agenda"
+        title="Eventos"
+        description="Cursos, congressos, workshops e jornadas científicas em nutrição em todo o Brasil."
+        actions={
+          <Button asChild>
+            <Link to="/eventos/novo">
+              <CalendarPlus className="mr-1.5 h-4 w-4" /> Divulgar evento
+            </Link>
+          </Button>
+        }
+      />
 
-      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 md:py-10">
         <EventFilters value={filtros} onChange={setFiltros} />
 
-        <div className="mt-6 text-sm text-muted-foreground">
-          {filtrados.length} evento{filtrados.length !== 1 ? "s" : ""} encontrado{filtrados.length !== 1 ? "s" : ""}
+        <div className="mt-6 flex items-center justify-between text-sm text-muted-foreground">
+          <span>
+            <strong className="font-semibold text-foreground">{filtrados.length}</strong> evento
+            {filtrados.length !== 1 ? "s" : ""} encontrado{filtrados.length !== 1 ? "s" : ""}
+          </span>
         </div>
 
         {filtrados.length === 0 ? (
-          <div className="mt-10 rounded-2xl border border-dashed border-border bg-card p-10 text-center text-muted-foreground">
-            Nenhum evento corresponde aos filtros selecionados.
+          <div className="mt-8 rounded-2xl border border-dashed border-border bg-card p-12 text-center">
+            <p className="font-display text-lg font-semibold">Nenhum evento encontrado</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Ajuste os filtros ou limpe a busca para ver mais resultados.
+            </p>
           </div>
         ) : (
           <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -61,3 +68,4 @@ function EventosIndex() {
     </SiteLayout>
   );
 }
+

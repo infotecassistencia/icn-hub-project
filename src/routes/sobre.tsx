@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/layout/SiteLayout";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { CheckCircle2 } from "lucide-react";
+
 
 export const Route = createFileRoute("/sobre")({
   head: () => ({
@@ -17,15 +19,14 @@ export const Route = createFileRoute("/sobre")({
 function Sobre() {
   return (
     <SiteLayout>
-      <section className="bg-gradient-hero">
-        <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 md:py-24">
-          <p className="text-sm font-semibold uppercase tracking-widest text-primary">Conheça</p>
-          <h1 className="mt-2 font-display text-4xl font-semibold md:text-6xl">ICN Hub</h1>
-          <p className="mt-3 text-xl text-muted-foreground">Ponto de encontro entre teoria, prática e carreira.</p>
-        </div>
-      </section>
+      <PageHeader
+        eyebrow="Conheça"
+        title="ICN Hub"
+        description="Ponto de encontro entre teoria, prática e carreira — a plataforma que reúne a nutrição brasileira em um só lugar."
+      />
 
-      <section className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
+      <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6 md:py-16">
+
         <div className="space-y-6 text-lg leading-relaxed text-foreground/90">
           <p>
             A nutrição está em constante evolução, e acompanhar oportunidades de aprendizado nem sempre

@@ -1,5 +1,6 @@
-import { Search } from "lucide-react";
+import { Search, SlidersHorizontal, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -19,9 +20,39 @@ export function EventFilters({ value, onChange }: Props) {
   const set = <K extends keyof FiltrosBusca>(k: K, v: FiltrosBusca[K]) =>
     onChange({ ...value, [k]: v });
 
+  const activeCount = [
+    value.modalidade && value.modalidade !== "todos",
+    value.pagamento && value.pagamento !== "todos",
+    value.estado && value.estado !== "todos",
+    value.area && value.area !== "todos",
+    Boolean(value.busca),
+  ].filter(Boolean).length;
+
   return (
-    <div className="rounded-2xl border border-border bg-card p-4 shadow-card">
-      <div className="grid gap-3 md:grid-cols-5">
+    <div className="rounded-2xl border border-border bg-card p-4 shadow-card md:p-5">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+          <SlidersHorizontal className="h-4 w-4" />
+          Filtros
+          {activeCount > 0 && (
+            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
+              {activeCount}
+            </span>
+          )}
+        </div>
+        {activeCount > 0 && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 text-muted-foreground hover:text-foreground"
+            onClick={() => onChange({})}
+          >
+            <X className="mr-1 h-3.5 w-3.5" /> Limpar
+          </Button>
+        )}
+      </div>
+
+      <div className="grid gap-3 md:grid-cols-6">
         <div className="relative md:col-span-2">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -68,14 +99,12 @@ export function EventFilters({ value, onChange }: Props) {
             ))}
           </SelectContent>
         </Select>
-      </div>
 
-      <div className="mt-3">
         <Select
           value={value.area ?? "todos"}
           onValueChange={(v) => set("area", v as FiltrosBusca["area"])}
         >
-          <SelectTrigger><SelectValue placeholder="Área da nutrição" /></SelectTrigger>
+          <SelectTrigger><SelectValue placeholder="Área" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="todos">Todas as áreas</SelectItem>
             {AREAS_NUTRICAO.map((a) => (

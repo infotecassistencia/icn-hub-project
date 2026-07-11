@@ -168,3 +168,18 @@
 @utility shadow-card {
   box-shadow: var(--shadow-card);
 }
+@utility shadow-elevated {
+  box-shadow: var(--shadow-elevated);
+}
+@utility bg-gradient-subtle {
+  background-image: var(--gradient-subtle);
+}
+
+/* Sutil malha decorativa para superfícies premium (hero, CTAs). */
+@utility bg-grid-soft {
+  background-image:
+    linear-gradient(to right, oklch(0.5 0.14 155 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.5 0.14 155 / 0.06) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+

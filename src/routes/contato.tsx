@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { SiteLayout } from "@/components/layout/SiteLayout";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/contato")({
@@ -72,22 +73,14 @@ function ContatoPage() {
 
   return (
     <SiteLayout>
-      <section className="bg-gradient-hero">
-        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-          <div className="max-w-2xl">
-            <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-              <MessageSquareText className="h-3.5 w-3.5" /> Fale com a gente
-            </span>
-            <h1 className="mt-4 font-display text-4xl font-semibold md:text-5xl">Contato</h1>
-            <p className="mt-3 text-lg text-muted-foreground">
-              Dúvidas, parcerias, sugestões ou reporte de problemas: envie sua mensagem
-              e nossa equipe retornará em breve.
-            </p>
-          </div>
-        </div>
-      </section>
+      <PageHeader
+        eyebrow="Fale com a gente"
+        title="Contato"
+        description="Dúvidas, parcerias, sugestões ou reporte de problemas — envie sua mensagem e nossa equipe retornará em breve."
+      />
 
-      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+      <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 md:py-14">
+
         <div className="grid gap-8 md:grid-cols-[1fr_360px]">
           <Card className="shadow-card">
             <CardContent className="p-6 md:p-8">

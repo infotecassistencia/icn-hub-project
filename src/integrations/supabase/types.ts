@@ -47,6 +47,80 @@ export type Database = {
         }
         Relationships: []
       }
+      eventos: {
+        Row: {
+          area: Database["public"]["Enums"]["area_nutricao"]
+          banner_url: string
+          created_at: string
+          criado_por: string | null
+          data: string
+          descricao: string | null
+          duracao: string
+          estado: string
+          id: string
+          local: string
+          mentor_id: string | null
+          ministrante: string
+          modalidade: Database["public"]["Enums"]["modalidade"]
+          nome: string
+          resumo: string
+          status: Database["public"]["Enums"]["status_validacao"]
+          tipo: Database["public"]["Enums"]["tipo_evento"]
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          area: Database["public"]["Enums"]["area_nutricao"]
+          banner_url: string
+          created_at?: string
+          criado_por?: string | null
+          data: string
+          descricao?: string | null
+          duracao: string
+          estado: string
+          id?: string
+          local: string
+          mentor_id?: string | null
+          ministrante: string
+          modalidade: Database["public"]["Enums"]["modalidade"]
+          nome: string
+          resumo: string
+          status?: Database["public"]["Enums"]["status_validacao"]
+          tipo: Database["public"]["Enums"]["tipo_evento"]
+          updated_at?: string
+          valor?: number
+        }
+        Update: {
+          area?: Database["public"]["Enums"]["area_nutricao"]
+          banner_url?: string
+          created_at?: string
+          criado_por?: string | null
+          data?: string
+          descricao?: string | null
+          duracao?: string
+          estado?: string
+          id?: string
+          local?: string
+          mentor_id?: string | null
+          ministrante?: string
+          modalidade?: Database["public"]["Enums"]["modalidade"]
+          nome?: string
+          resumo?: string
+          status?: Database["public"]["Enums"]["status_validacao"]
+          tipo?: Database["public"]["Enums"]["tipo_evento"]
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eventos_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "mentores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mentores: {
         Row: {
           areas_atuacao: string[]
@@ -109,6 +183,77 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      mentorias: {
+        Row: {
+          area: Database["public"]["Enums"]["area_nutricao"]
+          banner_url: string
+          created_at: string
+          criado_por: string | null
+          data: string
+          descricao: string | null
+          duracao: string
+          estado: string
+          id: string
+          local: string
+          mentor_id: string | null
+          ministrante: string
+          modalidade: Database["public"]["Enums"]["modalidade"]
+          nome: string
+          resumo: string
+          status: Database["public"]["Enums"]["status_validacao"]
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          area: Database["public"]["Enums"]["area_nutricao"]
+          banner_url: string
+          created_at?: string
+          criado_por?: string | null
+          data: string
+          descricao?: string | null
+          duracao: string
+          estado: string
+          id?: string
+          local: string
+          mentor_id?: string | null
+          ministrante: string
+          modalidade: Database["public"]["Enums"]["modalidade"]
+          nome: string
+          resumo: string
+          status?: Database["public"]["Enums"]["status_validacao"]
+          updated_at?: string
+          valor?: number
+        }
+        Update: {
+          area?: Database["public"]["Enums"]["area_nutricao"]
+          banner_url?: string
+          created_at?: string
+          criado_por?: string | null
+          data?: string
+          descricao?: string | null
+          duracao?: string
+          estado?: string
+          id?: string
+          local?: string
+          mentor_id?: string | null
+          ministrante?: string
+          modalidade?: Database["public"]["Enums"]["modalidade"]
+          nome?: string
+          resumo?: string
+          status?: Database["public"]["Enums"]["status_validacao"]
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentorias_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "mentores"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notifications: {
         Row: {
@@ -244,6 +389,26 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "organizador" | "participante"
+      area_nutricao:
+        | "clinica"
+        | "esporte"
+        | "saude-mulher"
+        | "materno-infantil"
+        | "oncologia"
+        | "uan"
+        | "social"
+        | "gestao-marketing"
+        | "hospitalar"
+        | "outros"
+      modalidade: "presencial" | "online"
+      status_validacao: "pendente" | "aprovado" | "recusado"
+      tipo_evento:
+        | "curso"
+        | "congresso"
+        | "workshop"
+        | "jornada"
+        | "encontro"
+        | "outro"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -372,6 +537,28 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "organizador", "participante"],
+      area_nutricao: [
+        "clinica",
+        "esporte",
+        "saude-mulher",
+        "materno-infantil",
+        "oncologia",
+        "uan",
+        "social",
+        "gestao-marketing",
+        "hospitalar",
+        "outros",
+      ],
+      modalidade: ["presencial", "online"],
+      status_validacao: ["pendente", "aprovado", "recusado"],
+      tipo_evento: [
+        "curso",
+        "congresso",
+        "workshop",
+        "jornada",
+        "encontro",
+        "outro",
+      ],
     },
   },
 } as const

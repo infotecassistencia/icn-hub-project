@@ -220,60 +220,7 @@ export type Database = {
       }
     }
     Views: {
-      mentores_public: {
-        Row: {
-          areas_atuacao: string[] | null
-          bio: string | null
-          cidade: string | null
-          created_at: string | null
-          especialidade: string | null
-          estado: string | null
-          formacao: string | null
-          foto_url: string | null
-          id: string | null
-          instagram: string | null
-          linkedin: string | null
-          nome: string | null
-          site: string | null
-          slug: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          areas_atuacao?: string[] | null
-          bio?: string | null
-          cidade?: string | null
-          created_at?: string | null
-          especialidade?: string | null
-          estado?: string | null
-          formacao?: string | null
-          foto_url?: string | null
-          id?: string | null
-          instagram?: string | null
-          linkedin?: string | null
-          nome?: string | null
-          site?: string | null
-          slug?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          areas_atuacao?: string[] | null
-          bio?: string | null
-          cidade?: string | null
-          created_at?: string | null
-          especialidade?: string | null
-          estado?: string | null
-          formacao?: string | null
-          foto_url?: string | null
-          id?: string | null
-          instagram?: string | null
-          linkedin?: string | null
-          nome?: string | null
-          site?: string | null
-          slug?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       create_notification: {

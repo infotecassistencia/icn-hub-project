@@ -120,29 +120,34 @@ export async function fetchMentoriaById(id: string): Promise<Mentoria | null> {
   return data ? mapMentoria(data as unknown as MentoriaRow) : null;
 }
 
+async function mentorIdBySlug(slug: string): Promise<string | null> {
+  const { data, error } = await supabase.from("mentores").select("id").eq("slug", slug).maybeSingle();
+  if (error) throw error;
+  return data?.id ?? null;
+}
+
 export async function fetchEventosByMentorSlug(slug: string): Promise<Evento[]> {
+  const mentorId = await mentorIdBySlug(slug);
+  if (!mentorId) return [];
   const { data, error } = await supabase
     .from("eventos")
     .select(EVENTO_SELECT)
     .eq("status", "aprovado")
-    .eq("mentores.slug", slug)
-    .not("mentor_id", "is", null)
+    .eq("mentor_id", mentorId)
     .order("data", { ascending: true });
   if (error) throw error;
-  return (data ?? [])
-    .map((r) => mapEvento(r as unknown as EventoRow))
-    .filter((e) => e.mentorSlug === slug);
+  return (data ?? []).map((r) => mapEvento(r as unknown as EventoRow));
 }
 
 export async function fetchMentoriasByMentorSlug(slug: string): Promise<Mentoria[]> {
+  const mentorId = await mentorIdBySlug(slug);
+  if (!mentorId) return [];
   const { data, error } = await supabase
     .from("mentorias")
     .select(MENTORIA_SELECT)
     .eq("status", "aprovado")
-    .not("mentor_id", "is", null)
+    .eq("mentor_id", mentorId)
     .order("data", { ascending: true });
   if (error) throw error;
-  return (data ?? [])
-    .map((r) => mapMentoria(r as unknown as MentoriaRow))
-    .filter((m) => m.mentorSlug === slug);
+  return (data ?? []).map((r) => mapMentoria(r as unknown as MentoriaRow));
 }

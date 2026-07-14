@@ -16,17 +16,26 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { EventCard } from "@/components/events/EventCard";
-import { MOCK_EVENTOS, MOCK_MENTORIAS } from "@/lib/mock-data";
+import { fetchEventos, fetchMentorias } from "@/lib/api/catalog";
 import { areaLabel } from "@/lib/constants";
+import { useQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/")({
   component: Landing,
 });
 
 function Landing() {
-  const eventosDestaque = MOCK_EVENTOS.slice(0, 3);
-  const mentoriasDestaque = MOCK_MENTORIAS.slice(0, 3);
-  const heroPreview = MOCK_EVENTOS.slice(0, 3);
+  const { data: eventos = [] } = useQuery({
+    queryKey: ["eventos", "public", {}],
+    queryFn: () => fetchEventos({}),
+  });
+  const { data: mentorias = [] } = useQuery({
+    queryKey: ["mentorias", "public", {}],
+    queryFn: () => fetchMentorias({}),
+  });
+  const eventosDestaque = eventos.slice(0, 3);
+  const mentoriasDestaque = mentorias.slice(0, 3);
+  const heroPreview = eventos.slice(0, 3);
 
   return (
     <SiteLayout>

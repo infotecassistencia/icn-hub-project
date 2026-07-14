@@ -3,12 +3,12 @@ import { CalendarDays, MapPin, Clock, User2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SiteLayout } from "@/components/layout/SiteLayout";
-import { MOCK_EVENTOS } from "@/lib/mock-data";
+import { fetchEventoById } from "@/lib/api/catalog";
 import { areaLabel, tipoEventoLabel } from "@/lib/constants";
 
 export const Route = createFileRoute("/eventos/$id")({
-  loader: ({ params }) => {
-    const evento = MOCK_EVENTOS.find((e) => e.id === params.id);
+  loader: async ({ params }) => {
+    const evento = await fetchEventoById(params.id);
     if (!evento) throw notFound();
     return { evento };
   },

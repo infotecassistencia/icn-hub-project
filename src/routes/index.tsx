@@ -72,8 +72,8 @@ function Landing() {
             </div>
 
             <dl className="mt-10 grid max-w-lg grid-cols-3 gap-6 border-t border-border/60 pt-6">
-              <HeroStat value={`${MOCK_EVENTOS.length}+`} label="Eventos ativos" />
-              <HeroStat value={`${MOCK_MENTORIAS.length}+`} label="Mentorias" />
+              <HeroStat value={`${eventos.length}+`} label="Eventos ativos" />
+              <HeroStat value={`${mentorias.length}+`} label="Mentorias" />
               <HeroStat value="Brasil" label="Cobertura nacional" />
             </dl>
           </div>

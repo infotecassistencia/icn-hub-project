@@ -17,15 +17,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { EventCard } from "@/components/events/EventCard";
 import { findMentorBySlug } from "@/lib/mock-mentores";
-import { MOCK_EVENTOS, MOCK_MENTORIAS } from "@/lib/mock-data";
+import { fetchEventosByMentorSlug, fetchMentoriasByMentorSlug } from "@/lib/api/catalog";
 import { areaLabel } from "@/lib/constants";
 
 export const Route = createFileRoute("/mentores/$slug")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const mentor = findMentorBySlug(params.slug);
     if (!mentor) throw notFound();
-    const eventos = MOCK_EVENTOS.filter((e) => e.mentorSlug === mentor.slug);
-    const mentorias = MOCK_MENTORIAS.filter((m) => m.mentorSlug === mentor.slug);
+    const [eventos, mentorias] = await Promise.all([
+      fetchEventosByMentorSlug(mentor.slug),
+      fetchMentoriasByMentorSlug(mentor.slug),
+    ]);
     return { mentor, eventos, mentorias };
   },
   head: ({ loaderData }) => ({

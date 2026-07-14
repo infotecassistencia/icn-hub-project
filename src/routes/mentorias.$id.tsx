@@ -3,12 +3,12 @@ import { CalendarDays, MapPin, Clock, User2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SiteLayout } from "@/components/layout/SiteLayout";
-import { MOCK_MENTORIAS } from "@/lib/mock-data";
+import { fetchMentoriaById } from "@/lib/api/catalog";
 import { areaLabel } from "@/lib/constants";
 
 export const Route = createFileRoute("/mentorias/$id")({
-  loader: ({ params }) => {
-    const mentoria = MOCK_MENTORIAS.find((m) => m.id === params.id);
+  loader: async ({ params }) => {
+    const mentoria = await fetchMentoriaById(params.id);
     if (!mentoria) throw notFound();
     return { mentoria };
   },

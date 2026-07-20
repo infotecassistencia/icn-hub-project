@@ -1,0 +1,92 @@
+import { Link } from "@tanstack/react-router";
+import { CalendarDays, MapPin, Clock, User2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { CardContent } from "@/components/ui/card";
+import { areaLabel } from "@/lib/constants";
+import type { Evento, Mentoria } from "@/lib/types";
+
+type Item = Evento | Mentoria;
+
+interface Props {
+  item: Item;
+  basePath: "/eventos" | "/mentorias";
+}
+
+export function EventCard({ item, basePath }: Props) {
+  const gratuito = item.valor === 0;
+  const data = new Date(item.data);
+  const to = basePath === "/eventos" ? "/eventos/$id" : "/mentorias/$id";
+  const ministranteNome = item.ministrante.split("+")[0].trim();
+
+  return (
+    <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-soft">
+      <Link to={to} params={{ id: item.id }} className="relative block overflow-hidden">
+        <div
+          className="aspect-[16/10] w-full bg-secondary bg-cover bg-center transition-transform duration-500 group-hover:scale-[1.04]"
+          style={{ backgroundImage: `url(${item.bannerUrl})` }}
+        />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-foreground/40 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+        <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
+          <Badge variant="secondary" className="capitalize backdrop-blur">
+            {item.modalidade}
+          </Badge>
+          <Badge
+            className={
+              gratuito
+                ? "bg-accent text-accent-foreground shadow-sm"
+                : "bg-primary text-primary-foreground shadow-sm"
+            }
+          >
+            {gratuito ? "Gratuito" : `R$ ${item.valor.toLocaleString("pt-BR")}`}
+          </Badge>
+        </div>
+      </Link>
+      <CardContent className="flex flex-1 flex-col p-5">
+        <div className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-primary">
+          {areaLabel(item.area)}
+        </div>
+
+        <Link to={to} params={{ id: item.id }} className="block">
+          <h3 className="font-display text-lg font-semibold leading-snug transition-colors group-hover:text-primary">
+            {item.nome}
+          </h3>
+          <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+            {item.resumo}
+          </p>
+        </Link>
+
+        <div className="mt-auto pt-4">
+          <div className="grid grid-cols-2 gap-y-2 gap-x-3 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1.5">
+              <CalendarDays className="h-3.5 w-3.5 flex-none text-primary/70" />
+              {data.toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" })}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Clock className="h-3.5 w-3.5 flex-none text-primary/70" />
+              {item.duracao}
+            </span>
+            <span className="flex items-center gap-1.5 truncate">
+              <MapPin className="h-3.5 w-3.5 flex-none text-primary/70" />
+              <span className="truncate">{item.estado}</span>
+            </span>
+            <span className="flex items-center gap-1.5 truncate">
+              <User2 className="h-3.5 w-3.5 flex-none text-primary/70" />
+              {item.mentorSlug ? (
+                <Link
+                  to="/mentores/$slug"
+                  params={{ slug: item.mentorSlug }}
+                  className="truncate hover:text-primary hover:underline"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {ministranteNome}
+                </Link>
+              ) : (
+                <span className="truncate">{ministranteNome}</span>
+              )}
+            </span>
+          </div>
+        </div>
+      </CardContent>
+    </article>
+  );
+}

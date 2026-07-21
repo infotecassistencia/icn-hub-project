@@ -51,30 +51,33 @@ function UsuariosAdmin() {
   const [addRoleFor, setAddRoleFor] = useState<Record<string, AppRole>>({});
 
   const { data: users = [], isLoading } = useQuery({
-    queryKey: ["admin", "users"],
-    queryFn: async () => {
-      const [{ data: profiles, error: pe }, { data: roles, error: re }] = await Promise.all([
-        supabase.from("profiles").select("id, nome, email, tipo, created_at").order("created_at", { ascending: false }),
-        supabase.from("user_roles").select("user_id, role"),
-      ]);
-      if (pe) throw pe;
-      if (re) throw re;
-      const byUser = new Map<string, AppRole[]>();
-      for (const r of roles ?? []) {
-        const arr = byUser.get(r.user_id) ?? [];
-        arr.push(r.role as AppRole);
-        byUser.set(r.user_id, arr);
-      }
-      return (profiles ?? []).map<UserRow>((p) => ({
-        id: p.id,
-        nome: p.nome ?? "",
-        email: p.email ?? "",
-        tipo: p.tipo ?? "",
-        created_at: p.created_at ?? "",
-        roles: byUser.get(p.id) ?? [],
-      }));
-    },
-  });
+  queryKey: ["admin", "users"],
+
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("admin_users")
+      .select("id, nome, email, tipo, created_at, roles")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      throw error;
+    }
+
+    return (data ?? [])
+  .filter(
+    (user): user is typeof user & { id: string } =>
+      user.id !== null,
+  )
+  .map<UserRow>((user) => ({
+    id: user.id,
+    nome: user.nome ?? "",
+    email: user.email ?? "",
+    tipo: user.tipo ?? "",
+    created_at: user.created_at ?? "",
+    roles: (user.roles ?? []) as AppRole[],
+  }));
+  },
+});
 
   const grant = useMutation({
     mutationFn: async ({ userId, role }: { userId: string; role: AppRole }) => {

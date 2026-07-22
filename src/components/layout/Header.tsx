@@ -24,6 +24,7 @@ import {
   Avatar,
   AvatarFallback,
 } from "@/components/ui/avatar";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 const NAV = [
   {
@@ -107,6 +108,7 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
+<ThemeToggle />
           {isAuthenticated && user ? (
             <>
               <NotificationBell />
@@ -250,6 +252,19 @@ export function Header() {
       {open && (
         <div className="border-t border-border/70 bg-background md:hidden">
           <div className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-4 sm:px-6">
+<div className="mb-3 flex items-center justify-between rounded-2xl border border-border bg-card px-4 py-3">
+  <div>
+    <p className="text-sm font-medium text-foreground">
+      Aparência
+    </p>
+
+    <p className="text-xs text-muted-foreground">
+      Escolha o tema do site
+    </p>
+  </div>
+
+  <ThemeToggle />
+</div>
             {NAV.map((item) => (
               <Link
                 key={item.to}

@@ -121,9 +121,26 @@ function LoginForm() {
         replace: true,
       });
     } catch (error) {
-      console.error("Erro no login:", error);
-      toast.error("E-mail ou senha inválidos.");
-    } finally {
+  console.error("Erro no login:", error);
+
+  const message =
+    error instanceof Error
+      ? error.message.toLowerCase()
+      : "";
+
+  if (
+    message.includes("email not confirmed") ||
+    message.includes("email_not_confirmed")
+  ) {
+    toast.error(
+      "Seu e-mail ainda não foi confirmado. Verifique sua caixa de entrada.",
+    );
+
+    return;
+  }
+
+  toast.error("E-mail ou senha inválidos.");
+} finally {
       setLoading(false);
     }
   };
@@ -325,33 +342,53 @@ function RegisterForm({
       return;
     }
 
-    await register({
-      nome,
+    const { requiresEmailConfirmation } = await register({
+  nome,
+  email,
+  telefone,
+  cpf,
+  password,
+  tipo,
+
+  crn: form.get("crn")
+    ? String(form.get("crn")).trim()
+    : undefined,
+
+  areaAtuacao: form.get("areaAtuacao")
+    ? String(form.get("areaAtuacao")).trim()
+    : undefined,
+
+  instituicao: form.get("instituicao")
+    ? String(form.get("instituicao")).trim()
+    : undefined,
+
+  semestre: form.get("semestre")
+    ? String(form.get("semestre")).trim()
+    : undefined,
+});
+
+if (requiresEmailConfirmation) {
+  toast.success(
+    "Cadastro realizado. Confirme seu e-mail para acessar a conta.",
+  );
+
+  await navigate({
+    to: "/confirmar-email",
+    search: {
       email,
-      telefone,
-      cpf,
-      password,
-      tipo,
-      crn: form.get("crn")
-        ? String(form.get("crn")).trim()
-        : undefined,
-      areaAtuacao: form.get("areaAtuacao")
-        ? String(form.get("areaAtuacao")).trim()
-        : undefined,
-      instituicao: form.get("instituicao")
-        ? String(form.get("instituicao")).trim()
-        : undefined,
-      semestre: form.get("semestre")
-        ? String(form.get("semestre")).trim()
-        : undefined,
-    });
+    },
+    replace: true,
+  });
 
-    toast.success("Cadastro criado com sucesso.");
+  return;
+}
 
-    await navigate({
-      to: "/dashboard",
-      replace: true,
-    });
+toast.success("Cadastro criado com sucesso.");
+
+await navigate({
+  to: "/dashboard",
+  replace: true,
+});
   } catch (error) {
     console.error("Erro ao cadastrar usuário:", error);
 

@@ -12,7 +12,9 @@ interface AuthState {
   isOrganizador: boolean;
   hasRole: (role: AppRole) => boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (data: RegisterData) => Promise<void>;
+  register: (
+  data: RegisterData,
+) => Promise<{ requiresEmailConfirmation: boolean }>;
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
 }
@@ -100,36 +102,60 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) throw error;
   };
 
-  const register: AuthState["register"] = async (data) => {
-    const emailRedirectTo = typeof window !== "undefined" ? window.location.origin : undefined;
-    const { error } = await supabase.auth.signUp({
-      email: data.email,
-      password: data.password,
+  const register: AuthState["register"] = async (registerData) => {
+  const emailRedirectTo =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/auth?tab=login`
+      : undefined;
+
+  const { data: signUpData, error } =
+    await supabase.auth.signUp({
+      email: registerData.email,
+      password: registerData.password,
+
       options: {
         emailRedirectTo,
+
         data: {
-          nome: data.nome,
-          telefone: data.telefone,
-          cpf: data.cpf,
-          tipo: data.tipo,
+          nome: registerData.nome,
+          telefone: registerData.telefone,
+          cpf: registerData.cpf,
+          tipo: registerData.tipo,
+
+          crn: registerData.crn ?? null,
+          area_atuacao: registerData.areaAtuacao ?? null,
+          instituicao: registerData.instituicao ?? null,
+          semestre: registerData.semestre ?? null,
         },
       },
     });
-    if (error) throw error;
-    // Extra profile fields (crn, area, instituicao, semestre) — update after signup if a session exists
-    const { data: sess } = await supabase.auth.getSession();
-    if (sess.session?.user) {
-      await supabase
-        .from("profiles")
-        .update({
-          crn: data.crn ?? null,
-          area_atuacao: data.areaAtuacao ?? null,
-          instituicao: data.instituicao ?? null,
-          semestre: data.semestre ?? null,
-        })
-        .eq("id", sess.session.user.id);
+
+  if (error) {
+    throw error;
+  }
+
+  const requiresEmailConfirmation = !signUpData.session;
+
+  if (signUpData.session?.user) {
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .update({
+        crn: registerData.crn ?? null,
+        area_atuacao: registerData.areaAtuacao ?? null,
+        instituicao: registerData.instituicao ?? null,
+        semestre: registerData.semestre ?? null,
+      })
+      .eq("id", signUpData.session.user.id);
+
+    if (profileError) {
+      throw profileError;
     }
+  }
+
+  return {
+    requiresEmailConfirmation,
   };
+};
 
   const logout: AuthState["logout"] = async () => {
     await supabase.auth.signOut();

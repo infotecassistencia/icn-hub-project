@@ -1,4 +1,4 @@
-﻿export type Json =
+export type Json =
   | string
   | number
   | boolean
@@ -11,6 +11,31 @@ export type Database = {
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "14.5"
+  }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
   public: {
     Tables: {
@@ -62,6 +87,7 @@ export type Database = {
           mentor_id: string | null
           ministrante: string
           modalidade: Database["public"]["Enums"]["modalidade"]
+          motivo_recusa: string | null
           nome: string
           resumo: string
           status: Database["public"]["Enums"]["status_validacao"]
@@ -83,6 +109,7 @@ export type Database = {
           mentor_id?: string | null
           ministrante: string
           modalidade: Database["public"]["Enums"]["modalidade"]
+          motivo_recusa?: string | null
           nome: string
           resumo: string
           status?: Database["public"]["Enums"]["status_validacao"]
@@ -104,6 +131,7 @@ export type Database = {
           mentor_id?: string | null
           ministrante?: string
           modalidade?: Database["public"]["Enums"]["modalidade"]
+          motivo_recusa?: string | null
           nome?: string
           resumo?: string
           status?: Database["public"]["Enums"]["status_validacao"]
@@ -199,6 +227,7 @@ export type Database = {
           mentor_id: string | null
           ministrante: string
           modalidade: Database["public"]["Enums"]["modalidade"]
+          motivo_recusa: string | null
           nome: string
           resumo: string
           status: Database["public"]["Enums"]["status_validacao"]
@@ -219,6 +248,7 @@ export type Database = {
           mentor_id?: string | null
           ministrante: string
           modalidade: Database["public"]["Enums"]["modalidade"]
+          motivo_recusa?: string | null
           nome: string
           resumo: string
           status?: Database["public"]["Enums"]["status_validacao"]
@@ -239,6 +269,7 @@ export type Database = {
           mentor_id?: string | null
           ministrante?: string
           modalidade?: Database["public"]["Enums"]["modalidade"]
+          motivo_recusa?: string | null
           nome?: string
           resumo?: string
           status?: Database["public"]["Enums"]["status_validacao"]
@@ -254,6 +285,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      notificacoes: {
+        Row: {
+          created_at: string
+          id: string
+          lida: boolean
+          link: string | null
+          mensagem: string
+          tipo: string
+          titulo: string
+          usuario_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lida?: boolean
+          link?: string | null
+          mensagem: string
+          tipo?: string
+          titulo: string
+          usuario_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lida?: boolean
+          link?: string | null
+          mensagem?: string
+          tipo?: string
+          titulo?: string
+          usuario_id?: string
+        }
+        Relationships: []
       }
       notifications: {
         Row: {
@@ -296,6 +360,72 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      pedidos: {
+        Row: {
+          aprovado_em: string | null
+          codigo_voucher: string | null
+          comprador_id: string
+          created_at: string
+          dados_pagamento: Json
+          evento_id: string | null
+          id: string
+          meio_pagamento: string | null
+          mentoria_id: string | null
+          organizador_id: string
+          pagamento_externo_id: string | null
+          status: string
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          aprovado_em?: string | null
+          codigo_voucher?: string | null
+          comprador_id: string
+          created_at?: string
+          dados_pagamento?: Json
+          evento_id?: string | null
+          id?: string
+          meio_pagamento?: string | null
+          mentoria_id?: string | null
+          organizador_id: string
+          pagamento_externo_id?: string | null
+          status?: string
+          updated_at?: string
+          valor: number
+        }
+        Update: {
+          aprovado_em?: string | null
+          codigo_voucher?: string | null
+          comprador_id?: string
+          created_at?: string
+          dados_pagamento?: Json
+          evento_id?: string | null
+          id?: string
+          meio_pagamento?: string | null
+          mentoria_id?: string | null
+          organizador_id?: string
+          pagamento_externo_id?: string | null
+          status?: string
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pedidos_evento_id_fkey"
+            columns: ["evento_id"]
+            isOneToOne: false
+            referencedRelation: "eventos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pedidos_mentoria_id_fkey"
+            columns: ["mentoria_id"]
+            isOneToOne: false
+            referencedRelation: "mentorias"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -546,6 +676,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       app_role: ["admin", "organizador", "participante"],

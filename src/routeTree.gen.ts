@@ -34,6 +34,7 @@ import { Route as AuthenticatedAdminEventosRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminMensagensRouteImport } from './routes/_authenticated/admin/mensagens'
 import { Route as AuthenticatedAdminMentoriasRouteImport } from './routes/_authenticated/admin/mentorias'
 import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authenticated/admin/usuarios'
+import { Route as EventosEditarIdRouteImport } from './routes/eventos.editar.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -165,6 +166,11 @@ const AuthenticatedAdminUsuariosRoute =
     path: '/usuarios',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const EventosEditarIdRoute = EventosEditarIdRouteImport.update({
+  id: '/eventos/editar/$id',
+  path: '/eventos/editar/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -190,6 +196,7 @@ export interface FileRoutesByFullPath {
   '/admin/mensagens': typeof AuthenticatedAdminMensagensRoute
   '/admin/mentorias': typeof AuthenticatedAdminMentoriasRoute
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
+  '/eventos/editar/$id': typeof EventosEditarIdRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -215,6 +222,7 @@ export interface FileRoutesByTo {
   '/admin/mensagens': typeof AuthenticatedAdminMensagensRoute
   '/admin/mentorias': typeof AuthenticatedAdminMentoriasRoute
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
+  '/eventos/editar/$id': typeof EventosEditarIdRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesById {
@@ -243,6 +251,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/mensagens': typeof AuthenticatedAdminMensagensRoute
   '/_authenticated/admin/mentorias': typeof AuthenticatedAdminMentoriasRoute
   '/_authenticated/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
+  '/eventos/editar/$id': typeof EventosEditarIdRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -271,6 +280,7 @@ export interface FileRouteTypes {
     | '/admin/mensagens'
     | '/admin/mentorias'
     | '/admin/usuarios'
+    | '/eventos/editar/$id'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -296,6 +306,7 @@ export interface FileRouteTypes {
     | '/admin/mensagens'
     | '/admin/mentorias'
     | '/admin/usuarios'
+    | '/eventos/editar/$id'
     | '/admin'
   id:
     | '__root__'
@@ -323,6 +334,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/mensagens'
     | '/_authenticated/admin/mentorias'
     | '/_authenticated/admin/usuarios'
+    | '/eventos/editar/$id'
     | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -342,6 +354,7 @@ export interface RootRouteChildren {
   MentoriasNovaRoute: typeof MentoriasNovaRoute
   EventosIndexRoute: typeof EventosIndexRoute
   MentoriasIndexRoute: typeof MentoriasIndexRoute
+  EventosEditarIdRoute: typeof EventosEditarIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -521,6 +534,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminUsuariosRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/eventos/editar/$id': {
+      id: '/eventos/editar/$id'
+      path: '/eventos/editar/$id'
+      fullPath: '/eventos/editar/$id'
+      preLoaderRoute: typeof EventosEditarIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -579,6 +599,7 @@ const rootRouteChildren: RootRouteChildren = {
   MentoriasNovaRoute: MentoriasNovaRoute,
   EventosIndexRoute: EventosIndexRoute,
   MentoriasIndexRoute: MentoriasIndexRoute,
+  EventosEditarIdRoute: EventosEditarIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1002,3 +1002,4 @@ function isValidBrazilianPhone(
     subscriberNumber,
   );
 }
+

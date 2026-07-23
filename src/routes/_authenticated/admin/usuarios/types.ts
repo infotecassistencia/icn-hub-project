@@ -7,6 +7,11 @@ export interface UserRow {
   tipo: string;
   created_at: string;
   roles: AppRole[];
+
+  avatar_url: string | null;
+  cidade: string;
+  estado: string;
+  ativo: boolean;
 }
 
 export type UserRoleFilter = "todos" | AppRole;

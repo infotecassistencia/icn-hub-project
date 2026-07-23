@@ -1,4 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -6,8 +10,27 @@ import type { AppRole } from "@/lib/types";
 
 import type { UserRow } from "../types";
 
+interface UpdateUserInput {
+  userId: string;
+  nome: string;
+  cidade: string;
+  estado: string;
+  avatarUrl: string | null;
+}
+
+interface ToggleUserStatusInput {
+  userId: string;
+  ativo: boolean;
+}
+
 export function useAdminUsers() {
   const queryClient = useQueryClient();
+
+  async function refreshUsers() {
+    await queryClient.invalidateQueries({
+      queryKey: ["admin", "users"],
+    });
+  }
 
   const usersQuery = useQuery({
     queryKey: ["admin", "users"],
@@ -15,8 +38,23 @@ export function useAdminUsers() {
     queryFn: async (): Promise<UserRow[]> => {
       const { data, error } = await supabase
         .from("admin_users")
-        .select("id, nome, email, tipo, created_at, roles")
-        .order("created_at", { ascending: false });
+        .select(
+          `
+            id,
+            nome,
+            email,
+            tipo,
+            created_at,
+            roles,
+            avatar_url,
+            cidade,
+            estado,
+            ativo
+          `,
+        )
+        .order("created_at", {
+          ascending: false,
+        });
 
       if (error) {
         throw error;
@@ -34,6 +72,10 @@ export function useAdminUsers() {
           tipo: user.tipo ?? "",
           created_at: user.created_at ?? "",
           roles: (user.roles ?? []) as AppRole[],
+          avatar_url: user.avatar_url ?? null,
+          cidade: user.cidade ?? "",
+          estado: user.estado ?? "",
+          ativo: user.ativo ?? true,
         }));
     },
   });
@@ -46,10 +88,12 @@ export function useAdminUsers() {
       userId: string;
       role: AppRole;
     }) => {
-      const { error } = await supabase.from("user_roles").insert({
-        user_id: userId,
-        role,
-      });
+      const { error } = await supabase
+        .from("user_roles")
+        .insert({
+          user_id: userId,
+          role,
+        });
 
       if (error) {
         throw error;
@@ -58,16 +102,15 @@ export function useAdminUsers() {
 
     onSuccess: async () => {
       toast.success("Papel atribuído com sucesso");
-
-      await queryClient.invalidateQueries({
-        queryKey: ["admin", "users"],
-      });
+      await refreshUsers();
     },
 
     onError: (error: Error) => {
+      const normalizedMessage = error.message.toLowerCase();
+
       const duplicateRole =
-        error.message.toLowerCase().includes("duplicate") ||
-        error.message.toLowerCase().includes("unique");
+        normalizedMessage.includes("duplicate") ||
+        normalizedMessage.includes("unique");
 
       toast.error(
         duplicateRole
@@ -98,14 +141,106 @@ export function useAdminUsers() {
 
     onSuccess: async () => {
       toast.success("Papel removido com sucesso");
-
-      await queryClient.invalidateQueries({
-        queryKey: ["admin", "users"],
-      });
+      await refreshUsers();
     },
 
     onError: () => {
       toast.error("Não foi possível remover o papel");
+    },
+  });
+
+  const updateUserMutation = useMutation({
+    mutationFn: async ({
+      userId,
+      nome,
+      cidade,
+      estado,
+      avatarUrl,
+    }: UpdateUserInput) => {
+      const normalizedName = nome.trim();
+
+      if (!normalizedName) {
+        throw new Error("O nome do usuário é obrigatório");
+      }
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .update({
+          nome: normalizedName,
+          cidade: cidade.trim() || null,
+          estado: estado.trim().toUpperCase() || null,
+          avatar_url: avatarUrl?.trim() || null,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", userId)
+        .select("id")
+        .maybeSingle();
+
+      if (error) {
+        throw error;
+      }
+
+      if (!data) {
+        throw new Error(
+          "O usuário não foi atualizado. Verifique as permissões do administrador.",
+        );
+      }
+    },
+
+    onSuccess: async () => {
+      toast.success("Usuário atualizado com sucesso");
+      await refreshUsers();
+    },
+
+    onError: (error: Error) => {
+      toast.error(
+        error.message ||
+          "Não foi possível atualizar o usuário",
+      );
+    },
+  });
+
+  const toggleUserStatusMutation = useMutation({
+    mutationFn: async ({
+      userId,
+      ativo,
+    }: ToggleUserStatusInput) => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .update({
+          ativo,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", userId)
+        .select("id")
+        .maybeSingle();
+
+      if (error) {
+        throw error;
+      }
+
+      if (!data) {
+        throw new Error(
+          "O status não foi alterado. Verifique as permissões do administrador.",
+        );
+      }
+    },
+
+    onSuccess: async (_, variables) => {
+      toast.success(
+        variables.ativo
+          ? "Usuário ativado com sucesso"
+          : "Usuário desativado com sucesso",
+      );
+
+      await refreshUsers();
+    },
+
+    onError: (error: Error) => {
+      toast.error(
+        error.message ||
+          "Não foi possível alterar o status do usuário",
+      );
     },
   });
 
@@ -117,8 +252,13 @@ export function useAdminUsers() {
 
     grantRole: grantRoleMutation.mutate,
     revokeRole: revokeRoleMutation.mutate,
+    updateUser: updateUserMutation.mutate,
+    toggleUserStatus: toggleUserStatusMutation.mutate,
 
     isGrantingRole: grantRoleMutation.isPending,
     isRevokingRole: revokeRoleMutation.isPending,
+    isUpdatingUser: updateUserMutation.isPending,
+    isTogglingUserStatus:
+      toggleUserStatusMutation.isPending,
   };
 }

@@ -8,7 +8,11 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { AppRole } from "@/lib/types";
 
-import type { UserRow } from "../types";
+import type {
+  StatusValidacaoProfissional,
+  TipoProfissional,
+  UserRow,
+} from "../types";
 
 interface UpdateUserInput {
   userId: string;
@@ -21,6 +25,10 @@ interface UpdateUserInput {
 interface ToggleUserStatusInput {
   userId: string;
   ativo: boolean;
+}
+
+interface ProfessionalRequestInput {
+  userId: string;
 }
 
 export function useAdminUsers() {
@@ -49,7 +57,13 @@ export function useAdminUsers() {
             avatar_url,
             cidade,
             estado,
-            ativo
+            ativo,
+            tipo_solicitado,
+            crn_solicitado,
+            status_validacao,
+            solicitado_em,
+            analisado_em,
+            analisado_por
           `,
         )
         .order("created_at", {
@@ -76,6 +90,27 @@ export function useAdminUsers() {
           cidade: user.cidade ?? "",
           estado: user.estado ?? "",
           ativo: user.ativo ?? true,
+
+          tipo_solicitado:
+            (user.tipo_solicitado as TipoProfissional | null) ??
+            null,
+
+          crn_solicitado:
+            user.crn_solicitado ?? null,
+
+          status_validacao:
+            (user.status_validacao as
+              | StatusValidacaoProfissional
+              | null) ?? null,
+
+          solicitado_em:
+            user.solicitado_em ?? null,
+
+          analisado_em:
+            user.analisado_em ?? null,
+
+          analisado_por:
+            user.analisado_por ?? null,
         }));
     },
   });
@@ -106,7 +141,8 @@ export function useAdminUsers() {
     },
 
     onError: (error: Error) => {
-      const normalizedMessage = error.message.toLowerCase();
+      const normalizedMessage =
+        error.message.toLowerCase();
 
       const duplicateRole =
         normalizedMessage.includes("duplicate") ||
@@ -160,7 +196,9 @@ export function useAdminUsers() {
       const normalizedName = nome.trim();
 
       if (!normalizedName) {
-        throw new Error("O nome do usuário é obrigatório");
+        throw new Error(
+          "O nome do usuário é obrigatório",
+        );
       }
 
       const { data, error } = await supabase
@@ -168,7 +206,8 @@ export function useAdminUsers() {
         .update({
           nome: normalizedName,
           cidade: cidade.trim() || null,
-          estado: estado.trim().toUpperCase() || null,
+          estado:
+            estado.trim().toUpperCase() || null,
           avatar_url: avatarUrl?.trim() || null,
           updated_at: new Date().toISOString(),
         })
@@ -188,7 +227,10 @@ export function useAdminUsers() {
     },
 
     onSuccess: async () => {
-      toast.success("Usuário atualizado com sucesso");
+      toast.success(
+        "Usuário atualizado com sucesso",
+      );
+
       await refreshUsers();
     },
 
@@ -244,6 +286,72 @@ export function useAdminUsers() {
     },
   });
 
+  const approveProfessionalRequestMutation =
+    useMutation({
+      mutationFn: async ({
+        userId,
+      }: ProfessionalRequestInput) => {
+        const { error } = await supabase.rpc(
+          "aprovar_perfil_profissional",
+          {
+            p_profile_id: userId,
+          },
+        );
+
+        if (error) {
+          throw error;
+        }
+      },
+
+      onSuccess: async () => {
+        toast.success(
+          "Solicitação profissional aprovada",
+        );
+
+        await refreshUsers();
+      },
+
+      onError: (error: Error) => {
+        toast.error(
+          error.message ||
+            "Não foi possível aprovar a solicitação",
+        );
+      },
+    });
+
+  const rejectProfessionalRequestMutation =
+    useMutation({
+      mutationFn: async ({
+        userId,
+      }: ProfessionalRequestInput) => {
+        const { error } = await supabase.rpc(
+          "recusar_perfil_profissional",
+          {
+            p_profile_id: userId,
+          },
+        );
+
+        if (error) {
+          throw error;
+        }
+      },
+
+      onSuccess: async () => {
+        toast.success(
+          "Solicitação profissional recusada",
+        );
+
+        await refreshUsers();
+      },
+
+      onError: (error: Error) => {
+        toast.error(
+          error.message ||
+            "Não foi possível recusar a solicitação",
+        );
+      },
+    });
+
   return {
     users: usersQuery.data ?? [],
     isLoading: usersQuery.isLoading,
@@ -253,12 +361,32 @@ export function useAdminUsers() {
     grantRole: grantRoleMutation.mutate,
     revokeRole: revokeRoleMutation.mutate,
     updateUser: updateUserMutation.mutate,
-    toggleUserStatus: toggleUserStatusMutation.mutate,
 
-    isGrantingRole: grantRoleMutation.isPending,
-    isRevokingRole: revokeRoleMutation.isPending,
-    isUpdatingUser: updateUserMutation.isPending,
+    toggleUserStatus:
+      toggleUserStatusMutation.mutate,
+
+    approveProfessionalRequest:
+      approveProfessionalRequestMutation.mutate,
+
+    rejectProfessionalRequest:
+      rejectProfessionalRequestMutation.mutate,
+
+    isGrantingRole:
+      grantRoleMutation.isPending,
+
+    isRevokingRole:
+      revokeRoleMutation.isPending,
+
+    isUpdatingUser:
+      updateUserMutation.isPending,
+
     isTogglingUserStatus:
       toggleUserStatusMutation.isPending,
+
+    isApprovingProfessionalRequest:
+      approveProfessionalRequestMutation.isPending,
+
+    isRejectingProfessionalRequest:
+      rejectProfessionalRequestMutation.isPending,
   };
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  Clock3,
   Edit3,
   MapPin,
   Shield,
@@ -74,6 +75,10 @@ export function UserCard({
   }, [availableRoles, selectedRole]);
 
   const isCurrentUser = user.id === currentUserId;
+
+  const hasPendingProfessionalRequest =
+    user.status_validacao === "pendente";
+
   const userInitials = getInitials(user.nome);
 
   const location = [user.cidade, user.estado]
@@ -90,14 +95,28 @@ export function UserCard({
 
   return (
     <div
-      className={
-        user.ativo
-          ? "flex flex-wrap items-start justify-between gap-4 px-5 py-4"
-          : "flex flex-wrap items-start justify-between gap-4 bg-muted/30 px-5 py-4 opacity-75"
-      }
+      className={[
+        "flex flex-wrap items-start justify-between gap-4 px-5 py-4 transition-colors",
+
+        !user.ativo && "bg-muted/30 opacity-75",
+
+        hasPendingProfessionalRequest &&
+          "border-l-4 border-l-amber-500 bg-amber-50/50 dark:bg-amber-950/10",
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
       <div className="flex min-w-0 flex-1 items-start gap-4">
-        <Avatar className="h-12 w-12 shrink-0">
+        <Avatar
+          className={[
+            "h-12 w-12 shrink-0",
+
+            hasPendingProfessionalRequest &&
+              "ring-2 ring-amber-500 ring-offset-2 ring-offset-background",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+        >
           <AvatarImage
             src={user.avatar_url || undefined}
             alt={user.nome || "Avatar do usuário"}
@@ -116,12 +135,24 @@ export function UserCard({
               {user.nome || "(sem nome)"}
             </span>
 
+            {hasPendingProfessionalRequest && (
+              <Badge
+                variant="outline"
+                className="gap-1 border-amber-500 bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300"
+              >
+                <Clock3 className="h-3.5 w-3.5" />
+                Solicitação pendente
+              </Badge>
+            )}
+
             {isCurrentUser && (
               <Badge variant="outline">Você</Badge>
             )}
 
             <Badge
-              variant={user.ativo ? "secondary" : "destructive"}
+              variant={
+                user.ativo ? "secondary" : "destructive"
+              }
             >
               {user.ativo ? "Ativo" : "Inativo"}
             </Badge>
@@ -134,7 +165,50 @@ export function UserCard({
           {location && (
             <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
               <MapPin className="h-3.5 w-3.5 shrink-0" />
-              <span className="truncate">{location}</span>
+
+              <span className="truncate">
+                {location}
+              </span>
+            </div>
+          )}
+
+          {hasPendingProfessionalRequest && (
+            <div className="mt-3 max-w-xl rounded-md border border-amber-300 bg-amber-100/80 px-3 py-2 text-xs text-amber-900 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-200">
+              <div className="flex items-start gap-2">
+                <Clock3 className="mt-0.5 h-4 w-4 shrink-0" />
+
+                <div>
+                  <p className="font-medium">
+                    Alteração de perfil aguardando análise
+                  </p>
+
+                  <p className="mt-0.5">
+                    Este usuário solicitou alteração para
+                    perfil profissional.
+                  </p>
+
+                  {(user.tipo_solicitado ||
+                    user.crn_solicitado) && (
+                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+                      {user.tipo_solicitado && (
+                        <span>
+                          <strong>Perfil solicitado:</strong>{" "}
+                          {formatProfessionalType(
+                            user.tipo_solicitado,
+                          )}
+                        </span>
+                      )}
+
+                      {user.crn_solicitado && (
+                        <span>
+                          <strong>CRN:</strong>{" "}
+                          {user.crn_solicitado}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           )}
 
@@ -168,7 +242,8 @@ export function UserCard({
                       onRevokeRole(user.id, role)
                     }
                     disabled={
-                      isRevokingRole || cannotRemoveOwnAdmin
+                      isRevokingRole ||
+                      cannotRemoveOwnAdmin
                     }
                     className="text-muted-foreground transition-colors hover:text-destructive disabled:cursor-not-allowed disabled:opacity-40"
                     aria-label={`Remover ${ROLE_LABEL[role]}`}
@@ -202,7 +277,10 @@ export function UserCard({
 
               <SelectContent>
                 {availableRoles.map((role) => (
-                  <SelectItem key={role} value={role}>
+                  <SelectItem
+                    key={role}
+                    value={role}
+                  >
                     {ROLE_LABEL[role]}
                   </SelectItem>
                 ))}
@@ -225,11 +303,27 @@ export function UserCard({
         <Button
           type="button"
           size="sm"
-          variant="outline"
+          variant={
+            hasPendingProfessionalRequest
+              ? "default"
+              : "outline"
+          }
+          className={
+            hasPendingProfessionalRequest
+              ? "bg-amber-600 text-white hover:bg-amber-700"
+              : undefined
+          }
           onClick={() => onEditUser(user)}
         >
-          <Edit3 className="mr-1.5 h-4 w-4" />
-          Editar
+          {hasPendingProfessionalRequest ? (
+            <Clock3 className="mr-1.5 h-4 w-4" />
+          ) : (
+            <Edit3 className="mr-1.5 h-4 w-4" />
+          )}
+
+          {hasPendingProfessionalRequest
+            ? "Analisar solicitação"
+            : "Editar"}
         </Button>
       </div>
     </div>
@@ -247,4 +341,23 @@ function getInitials(name: string) {
     .slice(0, 2)
     .map((part) => part.charAt(0).toUpperCase())
     .join("");
+}
+
+function formatProfessionalType(type: string) {
+  const normalizedType = type
+    .trim()
+    .toLocaleLowerCase("pt-BR");
+
+  if (normalizedType === "nutricionista") {
+    return "Nutricionista";
+  }
+
+  if (
+    normalizedType === "tecnico" ||
+    normalizedType === "técnico"
+  ) {
+    return "Técnico em Nutrição";
+  }
+
+  return type;
 }

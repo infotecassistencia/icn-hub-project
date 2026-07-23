@@ -260,17 +260,13 @@ function LoginForm() {
     setLoading(true);
 
     try {
-      const { error } =
-        await supabase.auth.resetPasswordForEmail(
-          email,
-          {
-            redirectTo: `${window.location.origin}/redefinir-senha`,
-          },
-        );
+const { error } = await supabase.auth.resetPasswordForEmail(email, {
+  redirectTo: "http://10.174.154.74:8080/redefinir-senha",
+});
 
-      if (error) {
-        throw error;
-      }
+if (error) {
+  throw error;
+}
 
       toast.success(
         "Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha.",

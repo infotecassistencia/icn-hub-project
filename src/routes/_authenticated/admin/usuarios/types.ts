@@ -1,5 +1,14 @@
 import type { AppRole } from "@/lib/types";
 
+export type StatusValidacaoProfissional =
+  | "pendente"
+  | "aprovado"
+  | "recusado";
+
+export type TipoProfissional =
+  | "nutricionista"
+  | "tecnico";
+
 export interface UserRow {
   id: string;
   nome: string;
@@ -12,6 +21,13 @@ export interface UserRow {
   cidade: string;
   estado: string;
   ativo: boolean;
+
+  tipo_solicitado: TipoProfissional | null;
+  crn_solicitado: string | null;
+  status_validacao: StatusValidacaoProfissional | null;
+  solicitado_em: string | null;
+  analisado_em: string | null;
+  analisado_por: string | null;
 }
 
 export type UserRoleFilter = "todos" | AppRole;

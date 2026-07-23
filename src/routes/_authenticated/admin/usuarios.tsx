@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { AlertCircle } from "lucide-react";
-import { toast } from "sonner";
-
+import { AlertCircle, Clock3 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/lib/auth-context";
 
@@ -44,22 +43,27 @@ function UsuariosAdmin() {
   const [selectedUser, setSelectedUser] =
     useState<UserRow | null>(null);
 
-  const [isUserModalOpen, setIsUserModalOpen] =
-    useState(false);
-
   const {
     users,
     isLoading,
     isError,
     error,
+
     grantRole,
     revokeRole,
     updateUser,
     toggleUserStatus,
+
+    approveProfessionalRequest,
+    rejectProfessionalRequest,
+
     isGrantingRole,
     isRevokingRole,
     isUpdatingUser,
     isTogglingUserStatus,
+
+    isApprovingProfessionalRequest,
+    isRejectingProfessionalRequest,
   } = useAdminUsers();
 
   useEffect(() => {
@@ -76,60 +80,103 @@ function UsuariosAdmin() {
     }
   }, [users, selectedUser?.id]);
 
+  const pendingProfessionalRequestsCount = useMemo(
+    () =>
+      users.filter(
+        (user) => user.status_validacao === "pendente",
+      ).length,
+    [users],
+  );
+
   const filteredUsers = useMemo(() => {
     const normalizedSearch = search
       .trim()
       .toLocaleLowerCase("pt-BR");
 
-    return users.filter((user) => {
-      const matchesSearch =
-        normalizedSearch.length === 0 ||
-        user.nome
-          .toLocaleLowerCase("pt-BR")
-          .includes(normalizedSearch) ||
-        user.email
-          .toLocaleLowerCase("pt-BR")
-          .includes(normalizedSearch) ||
-        user.cidade
-          .toLocaleLowerCase("pt-BR")
-          .includes(normalizedSearch) ||
-        user.estado
-          .toLocaleLowerCase("pt-BR")
-          .includes(normalizedSearch);
+    return users
+      .filter((user) => {
+        const matchesSearch =
+          normalizedSearch.length === 0 ||
+          user.nome
+            .toLocaleLowerCase("pt-BR")
+            .includes(normalizedSearch) ||
+          user.email
+            .toLocaleLowerCase("pt-BR")
+            .includes(normalizedSearch) ||
+          user.cidade
+            .toLocaleLowerCase("pt-BR")
+            .includes(normalizedSearch) ||
+          user.estado
+            .toLocaleLowerCase("pt-BR")
+            .includes(normalizedSearch);
 
-      const matchesRole =
-        roleFilter === "todos" ||
-        user.roles.includes(roleFilter);
+        const matchesRole =
+          roleFilter === "todos" ||
+          user.roles.includes(roleFilter);
 
-      return matchesSearch && matchesRole;
-    });
+        return matchesSearch && matchesRole;
+      })
+      .sort((a, b) => {
+        const aPending =
+          a.status_validacao === "pendente";
+        const bPending =
+          b.status_validacao === "pendente";
+
+        if (aPending === bPending) {
+          return a.nome.localeCompare(b.nome, "pt-BR");
+        }
+
+        return aPending ? -1 : 1;
+      });
   }, [users, search, roleFilter]);
 
   function handleEditUser(user: UserRow) {
     setSelectedUser(user);
-    setIsUserModalOpen(true);
-  }
-
-  function handleModalOpenChange(open: boolean) {
-    setIsUserModalOpen(open);
-
-    if (!open) {
-      setSelectedUser(null);
-    }
   }
 
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="font-display text-2xl font-semibold">
-          Usuários
-        </h1>
+        <div className="flex flex-wrap items-center gap-3">
+          <h1 className="font-display text-2xl font-semibold">
+            Usuários
+          </h1>
+
+          {pendingProfessionalRequestsCount > 0 && (
+            <Badge className="gap-1.5 bg-amber-500 text-white hover:bg-amber-500">
+              <Clock3 className="h-3.5 w-3.5" />
+              {pendingProfessionalRequestsCount}{" "}
+              {pendingProfessionalRequestsCount === 1
+                ? "solicitação pendente"
+                : "solicitações pendentes"}
+            </Badge>
+          )}
+        </div>
 
         <p className="mt-1 text-sm text-muted-foreground">
           Gerencie usuários e controle os papéis de acesso ao
           ICN Hub.
         </p>
       </header>
+
+      {pendingProfessionalRequestsCount > 0 && (
+        <div className="flex items-start gap-3 rounded-lg border border-amber-300 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-950/30">
+          <Clock3 className="mt-0.5 h-5 w-5 shrink-0 text-amber-700 dark:text-amber-400" />
+
+          <div>
+            <p className="font-medium text-amber-950 dark:text-amber-100">
+              Solicitações profissionais aguardando análise
+            </p>
+
+            <p className="mt-1 text-sm text-amber-800 dark:text-amber-300">
+              {pendingProfessionalRequestsCount === 1
+                ? "Há 1 usuário solicitando alteração para um perfil profissional."
+                : `Há ${pendingProfessionalRequestsCount} usuários solicitando alteração para um perfil profissional.`}
+              {" "}Os pedidos pendentes aparecem primeiro na lista.
+            </p>
+          </div>
+        </div>
+      )}
 
       <UserStats users={users} />
 
@@ -184,23 +231,28 @@ function UsuariosAdmin() {
 
       <UserModal
         user={selectedUser}
-        open={isUserModalOpen}
+        open={Boolean(selectedUser)}
         isUpdatingUser={isUpdatingUser}
         isTogglingUserStatus={isTogglingUserStatus}
-        onOpenChange={handleModalOpenChange}
-        onUpdateUser={(data) => {
-          updateUser(data);
-        }}
-        onToggleUserStatus={(data) => {
-          if (data.userId === currentUserId && !data.ativo) {
-            toast.error(
-              "Você não pode desativar sua própria conta.",
-            );
-            return;
+        isApprovingProfessionalRequest={
+          isApprovingProfessionalRequest
+        }
+        isRejectingProfessionalRequest={
+          isRejectingProfessionalRequest
+        }
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedUser(null);
           }
-
-          toggleUserStatus(data);
         }}
+        onUpdateUser={updateUser}
+        onToggleUserStatus={toggleUserStatus}
+        onApproveProfessionalRequest={
+          approveProfessionalRequest
+        }
+        onRejectProfessionalRequest={
+          rejectProfessionalRequest
+        }
       />
     </div>
   );

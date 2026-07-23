@@ -52,8 +52,16 @@ export function Header() {
     isAuthenticated,
     user,
     isAdmin,
+    isLoading,
     logout,
   } = useAuth();
+
+  console.log("USER:", user);
+
+const podePublicar =
+  !isLoading &&
+  Boolean(user) &&
+  user?.tipo !== "estudante";
 
   const navigate = useNavigate();
 
@@ -150,6 +158,7 @@ export function Header() {
                     </Link>
                   </DropdownMenuItem>
 
+                  {podePublicar && (
                   <DropdownMenuItem
                     asChild
                     className="rounded-lg"
@@ -158,6 +167,7 @@ export function Header() {
                       Meus envios
                     </Link>
                   </DropdownMenuItem>
+                  )}
 
                   <DropdownMenuItem
                     asChild
@@ -300,6 +310,7 @@ export function Header() {
                     </Link>
                   </Button>
 
+                  {podePublicar && (
                   <Button
                     asChild
                     variant="outline"
@@ -314,6 +325,7 @@ export function Header() {
                       Meus envios
                     </Link>
                   </Button>
+                  )}
 
                   {isAdmin && (
                     <Button

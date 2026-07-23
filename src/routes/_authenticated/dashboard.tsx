@@ -45,7 +45,8 @@ function Dashboard() {
               <Link to="/admin"><Shield className="mr-2 h-4 w-4" />Painel admin</Link>
             </Button>
           )}
-          {(isOrganizador || isAdmin) && (
+          {(isOrganizador || isAdmin) &&
+            user?.tipo !== "estudante" && (
             <>
               <Button asChild variant="outline"><Link to="/eventos/novo">Divulgar evento</Link></Button>
               <Button asChild><Link to="/mentorias/nova">Anunciar mentoria</Link></Button>

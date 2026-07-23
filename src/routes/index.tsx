@@ -20,6 +20,7 @@ import { EventCard } from "@/components/events/EventCard";
 import { SiteLayout } from "@/components/layout/SiteLayout";
 import { fetchEventos, fetchMentorias } from "@/lib/api/catalog";
 import { areaLabel } from "@/lib/constants";
+import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -30,6 +31,17 @@ function Landing() {
     queryKey: ["eventos", "public", {}],
     queryFn: () => fetchEventos({}),
   });
+
+const {
+  user,
+  isAuthenticated,
+  isLoading,
+} = useAuth();
+
+const podePublicar =
+  !isLoading &&
+  (!isAuthenticated ||
+    user?.tipo !== "estudante");
 
   const { data: mentorias = [] } = useQuery({
     queryKey: ["mentorias", "public", {}],
@@ -92,6 +104,7 @@ function Landing() {
                 </Link>
               </Button>
 
+              {podePublicar && (
               <Button
                 asChild
                 size="lg"
@@ -102,6 +115,7 @@ function Landing() {
                   Publicar evento
                 </Link>
               </Button>
+              )}
             </div>
 
             <dl className="mt-12 grid max-w-xl grid-cols-3 gap-4 border-t border-border/70 pt-6 sm:gap-8">
@@ -380,6 +394,7 @@ function Landing() {
                   </Link>
                 </Button>
 
+                {podePublicar && (
                 <Button
                   asChild
                   className="rounded-full"
@@ -388,6 +403,7 @@ function Landing() {
                     Anunciar mentoria
                   </Link>
                 </Button>
+                )}
               </div>
             }
           />
